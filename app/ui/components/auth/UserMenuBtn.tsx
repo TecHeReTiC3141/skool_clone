@@ -16,11 +16,13 @@ export default function UserMenuBtn({session}: UserMenuBtnProps) {
     return (
         <>
             <div className="dropdown dropdown-end">
-                <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-                    <FaUser className="text-xl"/>
+                <div className="tooltip tooltip-bottom" data-tip="User menu">
+                    <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+                        <FaUser className="text-xl"/>
+                    </div>
                 </div>
                 <ul tabIndex={0}
-                    className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-neutral rounded-box w-52 top-[85%]">
+                    className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-neutral rounded-box w-52 top-[80%]">
                     {user ?
                         <>
                             <li className="px-2 py-2">
@@ -46,13 +48,13 @@ export default function UserMenuBtn({session}: UserMenuBtnProps) {
                             </li>
                         </> :
                         <li>
-                            <Link href="/login">Log in</Link>
+                            <Link href="/login">Log in</Link>s
                         </li>
                     }
                 </ul>
 
             </div>
-            <LogOutModal />
+            <LogOutModal/>
         </>
     )
 }

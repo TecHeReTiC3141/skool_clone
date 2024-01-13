@@ -17,7 +17,9 @@ export default function RootLayout({children}: {
         <html lang="en">
             <body className={inter.className}>
                 <Header />
-                {children}
+                <main className="container m-auto">
+                    {children}
+                </main>
 
             </body>
         </html>
