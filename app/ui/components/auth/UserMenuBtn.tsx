@@ -12,6 +12,7 @@ interface UserMenuBtnProps {
 export default function UserMenuBtn({session}: UserMenuBtnProps) {
 
     const user = session?.user;
+    console.log("session", user);
 
     return (
         <>
@@ -30,7 +31,7 @@ export default function UserMenuBtn({session}: UserMenuBtnProps) {
                             </li>
                             <div className="divider h-2 my-0"></div>
                             <li>
-                                <Link href="/profile" className="justify-between py-3">
+                                <Link href={`/users/${user.slug}`} className="justify-between py-3">
                                     Profile
                                     <span className="badge">New</span>
                                 </Link>
@@ -48,7 +49,7 @@ export default function UserMenuBtn({session}: UserMenuBtnProps) {
                             </li>
                         </> :
                         <li>
-                            <Link href="/login">Log in</Link>s
+                            <Link href="/login">Log in</Link>
                         </li>
                     }
                 </ul>

@@ -2,9 +2,10 @@ import Link from "next/link";
 import {getServerSession} from "next-auth";
 import UserMenuBtn from "@/app/ui/components/auth/UserMenuBtn";
 import NotificationsBtn from "@/app/ui/components/NotificationsBtn";
+import {authOptions} from "@/app/lib/config/authOptions";
 
 export default async function Header() {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     return (
         <div className="w-full bg-base-300 flex justify-center mb-4 border-b border-neutral shadow-lg shadow-base-300">

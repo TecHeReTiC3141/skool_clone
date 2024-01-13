@@ -2,8 +2,9 @@ import type {Metadata} from 'next'
 import {Inter} from 'next/font/google'
 import './globals.css'
 import Header from "@/app/ui/components/Header";
+import SessionProvider from "@/app/ui/components/auth/SessionProvider"
 
-const inter = Inter({subsets: ['latin']})
+const inter = Inter({subsets: [ 'latin' ]})
 
 export const metadata: Metadata = {
     title: 'Skool clone',
@@ -15,13 +16,16 @@ export default function RootLayout({children}: {
 }) {
     return (
         <html lang="en">
-            <body className={inter.className}>
-                <Header />
+        <body className={inter.className}>
+            <SessionProvider>
+
+                <Header/>
                 <main className="container m-auto">
                     {children}
                 </main>
+            </SessionProvider>
 
-            </body>
+        </body>
         </html>
     )
 }
