@@ -12,7 +12,6 @@ interface UserMenuBtnProps {
 export default function UserMenuBtn({session}: UserMenuBtnProps) {
 
     const user = session?.user;
-    console.log("session", user);
 
     return (
         <>

@@ -55,11 +55,9 @@ export const authOptions: NextAuthOptions = {
             return token;
         },
         session({session, token }) {
-            console.log("in callback", session.user, token);
             session.accessToken = token.accessToken as string;
             session.user.id = token.id as string;
             session.user.slug = token.slug as string;
-            console.log("in callback", session.user);
             return session;
         },
     },
