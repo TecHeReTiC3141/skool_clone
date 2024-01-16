@@ -1,3 +1,5 @@
+"use server"
+
 import prisma from "@/app/lib/db/prisma";
 import {User} from "@prisma/client";
 
@@ -35,5 +37,16 @@ export async function createUser({name, email, password}: UserCredentials): Prom
             password: hashedPassword,
             slug,
         }
+    });
+}
+
+export async function updateUserImage(id: string, newUrl: string) {
+     await prisma.user.update({
+        where: {
+            id,
+        },
+         data: {
+            image: newUrl,
+         }
     });
 }

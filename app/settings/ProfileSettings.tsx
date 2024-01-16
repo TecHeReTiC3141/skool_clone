@@ -4,6 +4,7 @@ import {User} from "@prisma/client";
 import {Metadata} from "next";
 import {UserSettings} from "@/app/lib/db/user";
 import SubmitBtn from "@/app/ui/components/SubmitBtn";
+import FileUpload from "@/app/ui/components/FileUpload";
 
 interface ProfileSettingsProps {
     user: User,
@@ -33,6 +34,9 @@ export default function ProfileSettings({user, updateUserSettings}: ProfileSetti
     return (
         <div className="bg-neutral rounded-md flex-1 p-8">
             <h3 className="text-xl font-bold mb-8">Profile</h3>
+
+            <FileUpload user={user} />
+            <p>Change photo</p>
             <form action={handleSubmit} className="flex flex-col gap-4" onChange={event => {
                 const updateButton = document.querySelector("#update-profile")!;
                 const form = event.currentTarget as HTMLFormElement;

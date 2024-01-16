@@ -3,9 +3,14 @@ import prisma from "@/app/lib/db/prisma";
 import {authOptions} from "@/app/lib/config/authOptions";
 import {FaRegCalendar} from "react-icons/fa6";
 import Link from "next/link";
+import avatarPlaceholder from "@/public/avatar-placeholder.jpg";
 
 
-export default async function UserProfilePage({params: {slug}}: { params: { slug: string } }) {
+export default async function UserProfilePage({params: {slug}}: {
+    params: {
+        slug: string
+    }
+}) {
     const session = await getServerSession(authOptions);
 
     const currentUser = session?.user;
@@ -44,14 +49,20 @@ export default async function UserProfilePage({params: {slug}}: { params: { slug
             </div>
             <div className="card card-compact  w-72 bg-neutral shadow-xl">
                 <div className="card-body">
-                    <img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes"
-                         className="object-cover rounded-full"/>
+                    <div className="avatar">
+                        <div className="w-full rounded-full">
+                            {/* Turn into image */}
+                            <img src={user?.image || avatarPlaceholder.src} alt="Shoes"
+                                  width={280} height={280}/>
+                        </div>
+                    </div>
                     <h2 className="card-title">{user.name}</h2>
                     <p className="text-sm">@{user.slug}</p>
                     <p className="text-sm">{user.description}</p>
                     <div className="divider h-2 my-0"></div>
 
-                    <p className="flex items-center gap-4 my-3"><FaRegCalendar className="text-lg" /> Joined {joinDate}</p>
+                    <p className="flex items-center gap-4 my-3"><FaRegCalendar className="text-lg"/> Joined {joinDate}
+                    </p>
 
                     <div className="divider h-1 my-0"></div>
                     <div className="flex justify-between w-full">

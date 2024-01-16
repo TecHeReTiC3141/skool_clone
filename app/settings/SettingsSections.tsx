@@ -20,7 +20,7 @@ export default function SettingsSections() {
     ));
 
     return (
-        <div className="w-72">
+        <div className="w-72 max-w-[40%]">
             {sectionBtn}
         </div>
     )
