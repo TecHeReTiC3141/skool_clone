@@ -72,14 +72,22 @@ model VerificationToken {
 }
 
 model Community {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String   @unique
+  id          String               @id @default(auto()) @map("_id") @db.ObjectId
+  name        String               @unique
   thumb       String
-  isPublic    String
-  price       Int      @default(0)
+  accessLevel CommunityAccessLevel
+  price       Int                  @default(1)
+  slug        String
   filters     String[]
-  userId      String?  @db.ObjectId
-  memberCount Int      @default(0)
-  memberIDs   String[] @db.ObjectId
-  members     User[]   @relation(fields: [memberIDs], references: [id])
+  userId      String?              @db.ObjectId
+  memberCount Int                  @default(0)
+  memberIDs   String[]             @db.ObjectId
+  members     User[]               @relation(fields: [memberIDs], references: [id])
+
+  @@map("communities")
+}
+
+enum CommunityAccessLevel {
+  PRIVATE
+  PUBLIC
 }

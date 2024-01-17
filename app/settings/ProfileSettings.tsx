@@ -70,7 +70,8 @@ export default function ProfileSettings({user, updateUserSettings}: ProfileSetti
                     <div className="label">
                         <span className="label-text">Your bio:</span>
                     </div>
-                    <textarea name="description" className="textarea textarea-bordered" placeholder="Bio" defaultValue={user.description || ""}>
+                    <textarea name="description" className="textarea textarea-bordered"
+                              placeholder="Bio" defaultValue={user.description || ""}>
 
                     </textarea>
                 </label>

@@ -16,13 +16,16 @@
     "bcrypt": "^5.1.1",
     "clsx": "^2.1.0",
     "daisyui": "^4.5.0",
+    "lucide-react": "^0.311.0",
     "next": "14.0.4",
     "next-auth": "^4.24.5",
     "prisma": "^5.8.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-dropzone": "^14.2.3",
     "react-icons": "^5.0.0",
     "slugify": "^1.6.6",
+    "tailwind-merge": "^2.2.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
