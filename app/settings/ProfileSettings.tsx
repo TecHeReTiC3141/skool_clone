@@ -5,6 +5,7 @@ import {Metadata} from "next";
 import {UserSettings} from "@/app/lib/db/user";
 import SubmitBtn from "@/app/ui/components/SubmitBtn";
 import FileUpload from "@/app/ui/components/FileUpload";
+import avatarPlaceholder from "@/public/avatar-placeholder.jpg";
 
 interface ProfileSettingsProps {
     user: User,
@@ -35,8 +36,17 @@ export default function ProfileSettings({user, updateUserSettings}: ProfileSetti
         <div className="bg-neutral rounded-md flex-1 p-8">
             <h3 className="text-xl font-bold mb-8">Profile</h3>
 
+            <div className="flex gap-4 items-center mb-4">
+                <div className="avatar">
+                    <div className="w-16 rounded-full">
+                        {/* Turn into image */}
+                        <img src={user?.image || avatarPlaceholder.src} alt="Shoes"
+                             width={32} height={32}/>
+                    </div>
+                </div>
+                <p>Change photo</p>
+            </div>
             <FileUpload user={user} />
-            <p>Change photo</p>
             <form action={handleSubmit} className="flex flex-col gap-4" onChange={event => {
                 const updateButton = document.querySelector("#update-profile")!;
                 const form = event.currentTarget as HTMLFormElement;

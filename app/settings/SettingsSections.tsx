@@ -20,7 +20,7 @@ export default function SettingsSections() {
     ));
 
     return (
-        <div className="w-72 max-w-[40%]">
+        <div className="flex flex-col w-72 max-w-[40%] gap-1">
             {sectionBtn}
         </div>
     )

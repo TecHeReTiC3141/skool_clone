@@ -5,6 +5,7 @@ import {User} from "@prisma/client";
 
 import slugify from "slugify";
 import bcrypt from "bcrypt"
+import {revalidatePath} from "next/cache";
 
 interface UserCredentials {
     name: string,
@@ -41,12 +42,13 @@ export async function createUser({name, email, password}: UserCredentials): Prom
 }
 
 export async function updateUserImage(id: string, newUrl: string) {
-     await prisma.user.update({
+    await prisma.user.update({
         where: {
             id,
         },
-         data: {
+        data: {
             image: newUrl,
-         }
+        }
     });
+    revalidatePath("/settings");
 }
