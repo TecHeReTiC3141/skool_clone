@@ -2,8 +2,10 @@ import type {Metadata} from 'next'
 import {Inter} from 'next/font/google'
 import './globals.css'
 import Header from "@/app/ui/components/Header";
+import SessionProvider from "@/app/ui/components/auth/SessionProvider";
+import {EdgeStoreProvider} from "@/app/lib/edgestore";
 
-const inter = Inter({subsets: ['latin']})
+const inter = Inter({subsets: [ 'latin' ]})
 
 export const metadata: Metadata = {
     title: 'Skool clone',
@@ -15,11 +17,19 @@ export default function RootLayout({children}: {
 }) {
     return (
         <html lang="en">
-            <body className={inter.className}>
-                <Header />
-                {children}
+        <body className={inter.className}>
+            <EdgeStoreProvider>
 
-            </body>
+                <SessionProvider>
+
+                    <Header/>
+                    <main className="container m-auto">
+                        {children}
+                    </main>
+                </SessionProvider>
+            </EdgeStoreProvider>
+
+        </body>
         </html>
     )
 }

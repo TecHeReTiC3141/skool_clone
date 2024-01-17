@@ -30,9 +30,9 @@ export const authOptions: NextAuthOptions = {
                     where: {email: credentials.email},
                 });
 
-                console.log("found user", user, await bcrypt.compare( credentials.password, user?.password || "",));
-                if (user && await bcrypt.compare( credentials.password, user.password || "")) {
-                    const {id,  password, ...userFields} = user;
+                console.log("found user", user, await bcrypt.compare(credentials.password, user?.password || "",));
+                if (user && await bcrypt.compare(credentials.password, user.password || "")) {
+                    const {id, password, ...userFields} = user;
                     console.log("logged", user);
                     return user;
                 }
@@ -43,6 +43,26 @@ export const authOptions: NextAuthOptions = {
     pages: {
         signIn: "/login",
         error: "/login",
+    },
+    callbacks: {
+        async jwt({ token, user }) {
+            // Persist the OAuth access_token and or the user id to the token right after signin
+            if (user) {
+                token.accessToken = user.access_token;
+                token.id = user.id;
+                token.slug = user.slug;
+            }
+            return token;
+        },
+        session({session, token }) {
+            session.accessToken = token.accessToken as string;
+            session.user.id = token.id as string;
+            session.user.slug = token.slug as string;
+            return session;
+        },
+    },
+    session: {
+        strategy: "jwt",
     }
 
 }
