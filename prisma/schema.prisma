@@ -41,19 +41,21 @@ model Session {
 }
 
 model User {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
   name            String?
-  email           String?   @unique
-  slug            String    @unique
+  email           String?     @unique
+  slug            String      @unique
   description     String?
-  createdAt       DateTime  @default(now())
+  createdAt       DateTime    @default(now())
   password        String?
   emailVerified   DateTime?
   image           String?
   accounts        Account[]
   sessions        Session[]
-  followingNumber Int       @default(0)
-  followersNumber Int       @default(0)
+  followingNumber Int         @default(0)
+  followersNumber Int         @default(0)
+  communitiesIDs  String[]    @db.ObjectId
+  communities     Community[] @relation(fields: [communitiesIDs], references: [id])
 
   // Implement MANY-TO-MANy relations between follower
   @@map("users")
@@ -67,4 +69,17 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verefication_tokens")
+}
+
+model Community {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  thumb       String
+  isPublic    String
+  price       Int      @default(0)
+  filters     String[]
+  userId      String?  @db.ObjectId
+  memberCount Int      @default(0)
+  memberIDs   String[] @db.ObjectId
+  members     User[]   @relation(fields: [memberIDs], references: [id])
 }
