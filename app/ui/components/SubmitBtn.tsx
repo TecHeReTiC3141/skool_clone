@@ -1,5 +1,6 @@
 import {useFormStatus} from "react-dom";
 import React, {ComponentProps} from "react";
+import clsx from "clsx";
 
 
 type SubmitBtnProps = {
@@ -7,11 +8,11 @@ type SubmitBtnProps = {
     className?: string,
 } & ComponentProps<"button">
 
-export default function SubmitBtn({children}: SubmitBtnProps) {
+export default function SubmitBtn({children, className}: SubmitBtnProps) {
     const {pending} = useFormStatus();
 
     return (
-        <button id="update-profile" className="btn btn-primary uppercase max-w-xs" disabled={pending}>{children}{
+        <button id="submit-btn" className={clsx(["btn btn-primary uppercase", className])} disabled={pending}>{children}{
             pending && <span className="loading loading-spinner text-info"></span>
         }</button>
     )

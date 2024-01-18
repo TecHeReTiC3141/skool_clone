@@ -28,7 +28,7 @@ export default function ProfileSettings({user, updateUserSettings}: ProfileSetti
         };
         console.log(data);
         await updateUserSettings(user.id, data);
-        const updateButton = document.querySelector("#update-profile")!;
+        const updateButton = document.querySelector("#submit-btn")!;
         updateButton.setAttribute("disabled", "");
     }
 
@@ -48,7 +48,7 @@ export default function ProfileSettings({user, updateUserSettings}: ProfileSetti
             </div>
             <FileUpload user={user} />
             <form action={handleSubmit} className="flex flex-col gap-4" onChange={event => {
-                const updateButton = document.querySelector("#update-profile")!;
+                const updateButton = document.querySelector("#submit-btn")!;
                 const form = event.currentTarget as HTMLFormElement;
                 const data = new FormData(form);
                 for (const key of data.keys()) {
