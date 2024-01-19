@@ -1,7 +1,7 @@
 "use server"
 
 import prisma from "@/app/lib/db/prisma";
-import {CommunityAccessLevel} from "@prisma/client";
+import {Community, CommunityAccessLevel} from "@prisma/client";
 import {redirect} from "next/navigation";
 import slugify from "slugify";
 
@@ -36,8 +36,15 @@ export async function createCommunity({creatorId, name, price, accessLevel, thum
     return redirect(`/communities/${slug}`);
 }
 
-export async function getAllCommunities() {
+export type CommunityWithMembers = Community & {_count: { members: number }};
+
+export async function getMainPageCommunities(): Promise<CommunityWithMembers[]> {
     return await prisma.community.findMany({
         orderBy: { memberCount: "desc" },
+        include: {
+            _count: {
+                select: { members: true },
+            }
+        }
     })
 }
