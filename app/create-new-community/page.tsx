@@ -10,17 +10,18 @@ import SubmitBtn from "@/app/ui/components/SubmitBtn";
 
 export default function CreateCommunityForm() {
     // TODO: implement alert system for errors and other messages
-    const [ file, setFile ] = useState<File>();
+    const [ thumb, setThumb ] = useState<File>();
+    const [ icon, setIcon ] = useState<File>();
     const [ filters, setFilters ] = useState<string[]>([]);
     const [ progress, setProgress ] = useState(0);
     const {edgestore} = useEdgeStore();
 
     async function handleSubmit(formData: FormData) {
-        if (!file) return;
+        if (!thumb) return;
 
         const res = await edgestore.publicImages.upload({
-            file,
-            input: {type: "community"},
+            file: thumb,
+            input: {type: "community/thumb"},
             onProgressChange: (progress) => {
                 setProgress(progress);
             },
@@ -39,6 +40,8 @@ export default function CreateCommunityForm() {
         await createCommunity(data);
 
     }
+
+    // TODO: add community icon to form
 
     return (
         <div className="flex justify-center items-center">
@@ -73,6 +76,15 @@ export default function CreateCommunityForm() {
                         </label>
                     </div>
 
+                    <label className="form-control w-full">
+                        <div className="label">
+                            <span className="label-text">Community description</span>
+                        </div>
+                        <textarea name="description" className="textarea textarea-bordered"
+                                  placeholder="Describe briefly your community. Min chars count - 50, max - 1000">
+                        </textarea>
+                    </label>
+
                     <label className="form-control w-full ">
                         <div className="label">
                             <span className="label-text">Community topics</span>
@@ -87,18 +99,34 @@ export default function CreateCommunityForm() {
                         <SingleImageDropzone
                             width={350}
                             height={350}
-                            value={file}
+                            value={thumb}
                             className="w-full"
                             onChange={(file) => {
-                                setFile(file);
+                                setThumb(file);
                             }}
                         />
                         <progress className="progress w-full transition-all duration-200 mb-2" value={progress}
                                   max="100"></progress>
                     </label>
 
+                    <label className="form-control w-full flex-row mt-4 justify-between gap-4">
 
-                    <SubmitBtn className="btn-block">
+                        <SingleImageDropzone
+                            width={60}
+                            height={60}
+                            value={icon}
+                            className="w-full"
+                            onChange={(file) => {
+                                setIcon(file);
+                            }}
+                        />
+                        <div className="label">
+                            <span className="label-text">Community icon (100x100px optimally)</span>
+                        </div>
+                    </label>
+
+
+                    <SubmitBtn className="btn-block mt-4">
                         Create community
                     </SubmitBtn>
                 </form>

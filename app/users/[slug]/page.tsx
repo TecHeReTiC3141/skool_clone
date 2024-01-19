@@ -4,6 +4,7 @@ import {authOptions} from "@/app/lib/config/authOptions";
 import {FaRegCalendar} from "react-icons/fa6";
 import Link from "next/link";
 import avatarPlaceholder from "@/public/avatar-placeholder.jpg";
+import Image from "next/image";
 
 
 export default async function UserProfilePage({params: {slug}}: {
@@ -51,8 +52,8 @@ export default async function UserProfilePage({params: {slug}}: {
                 <div className="card-body">
                     <div className="avatar">
                         <div className="w-full rounded-full border-4 border-primary">
-                            {/* Turn into image */}
-                            <img src={user?.image || avatarPlaceholder.src} alt="Shoes"
+                            {/* TODO: Turn into image */}
+                            <Image src={user?.image || avatarPlaceholder.src} alt="Shoes"
                                   width={280} height={280}/>
                         </div>
                     </div>

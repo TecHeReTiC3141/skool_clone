@@ -27,3 +27,9 @@ export async function createCommunity({name, price, accessLevel, thumb, filters}
     });
     return redirect(`/communities/${slug}`);
 }
+
+export async function getAllCommunities() {
+    return await prisma.community.findMany({
+        orderBy: { memberCount: "desc" },
+    })
+}

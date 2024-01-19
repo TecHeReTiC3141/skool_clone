@@ -6,6 +6,7 @@ import {UserSettings} from "@/app/lib/db/user";
 import SubmitBtn from "@/app/ui/components/SubmitBtn";
 import FileUpload from "@/app/ui/components/FileUpload";
 import avatarPlaceholder from "@/public/avatar-placeholder.jpg";
+import Image from "next/image";
 
 interface ProfileSettingsProps {
     user: User,
@@ -40,8 +41,8 @@ export default function ProfileSettings({user, updateUserSettings}: ProfileSetti
                 <div className="avatar">
                     <div className="w-16 rounded-full">
                         {/* Turn into image */}
-                        <img src={user?.image || avatarPlaceholder.src} alt="Shoes"
-                             width={32} height={32}/>
+                        <Image src={user?.image || avatarPlaceholder.src} alt="Shoes"
+                             width={160} height={160}/>
                     </div>
                 </div>
                 <p>Change photo</p>
@@ -51,8 +52,9 @@ export default function ProfileSettings({user, updateUserSettings}: ProfileSetti
                 const updateButton = document.querySelector("#submit-btn")!;
                 const form = event.currentTarget as HTMLFormElement;
                 const data = new FormData(form);
-                for (const key of data.keys()) {
-                    if (key in user && data.get(key) !== user[ key ]) {
+                for (const key  in user) {
+                    const keyTyped = key as keyof typeof user;
+                    if (data.get(key) !== user[ keyTyped ]) {
                         updateButton.removeAttribute("disabled");
                         return;
                     }
