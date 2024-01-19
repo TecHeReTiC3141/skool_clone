@@ -6,6 +6,7 @@ import {redirect} from "next/navigation";
 import slugify from "slugify";
 
 export type CreateCommunityData = {
+    creatorId: string,
     name: string,
     price: number,
     accessLevel: CommunityAccessLevel,
@@ -15,7 +16,7 @@ export type CreateCommunityData = {
     description: string,
 }
 
-export async function createCommunity({name, price, accessLevel, thumb, filters, icon, description}: CreateCommunityData) {
+export async function createCommunity({creatorId, name, price, accessLevel, thumb, filters, icon, description}: CreateCommunityData) {
     const slug = slugify(name, {lower: true});
     await prisma.community.create({
         data: {
@@ -27,6 +28,9 @@ export async function createCommunity({name, price, accessLevel, thumb, filters,
             filters,
             icon,
             description,
+            members: {
+                connect: { id: creatorId }
+            }
         }
     });
     return redirect(`/communities/${slug}`);

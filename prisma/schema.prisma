@@ -78,11 +78,11 @@ model Community {
   icon        String
   accessLevel CommunityAccessLevel
   description String
-  price       Int                  @default(1)
+  price       Int                  @default(0)
   slug        String
   filters     String[]
   userId      String?              @db.ObjectId
-  memberCount Int                  @default(0)
+  memberCount Int                  @default(1)
   memberIDs   String[]             @db.ObjectId
   members     User[]               @relation(fields: [memberIDs], references: [id])
 
