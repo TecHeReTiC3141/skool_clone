@@ -75,9 +75,9 @@ model Community {
   id          String               @id @default(auto()) @map("_id") @db.ObjectId
   name        String               @unique
   thumb       String
-  icon        String?
+  icon        String
   accessLevel CommunityAccessLevel
-  description String?
+  description String
   price       Int                  @default(1)
   slug        String
   filters     String[]

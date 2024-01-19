@@ -6,7 +6,7 @@ export default async function CommunitiesGrid() {
     const communities = await getAllCommunities();
 
     return (
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 mb-8 max-w-5xl mx-auto grid gap-x-16 justify-center gap-y-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {communities.map(community => (
                 <CommunityCard community={community} key={community.id} />
             ))}

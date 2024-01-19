@@ -17,9 +17,9 @@ export default function CreateCommunityForm() {
     const {edgestore} = useEdgeStore();
 
     async function handleSubmit(formData: FormData) {
-        if (!thumb) return;
+        if (!thumb || !icon) return;
 
-        const res = await edgestore.publicImages.upload({
+        const resThumb = await edgestore.publicImages.upload({
             file: thumb,
             input: {type: "community/thumb"},
             onProgressChange: (progress) => {
@@ -27,11 +27,21 @@ export default function CreateCommunityForm() {
             },
         });
 
+        const resIcon = await edgestore.publicImages.upload({
+            file: icon,
+            input: {type: "community/icon"},
+            onProgressChange: (progress) => {
+                setProgress(progress);
+            },
+        });
+
         const data = {
             name: formData.get("name") as string,
+            description: formData.get("description") as string,
             price: Number(formData.get("price") as string) * 100,
             accessLevel: formData.get("access-level")?.toString().toUpperCase() as CommunityAccessLevel,
-            thumb: res.url,
+            thumb: resThumb.url,
+            icon: resIcon.url,
             filters,
         }
 
@@ -40,8 +50,6 @@ export default function CreateCommunityForm() {
         await createCommunity(data);
 
     }
-
-    // TODO: add community icon to form
 
     return (
         <div className="flex justify-center items-center">
@@ -61,8 +69,8 @@ export default function CreateCommunityForm() {
                             <div className="label">
                                 <span className="label-text">Access level</span>
                             </div>
-                            <select className="select w-full max-w-xs" name="access-level">
-                                <option disabled selected>Access level</option>
+                            <select className="select w-full max-w-xs" name="access-level" defaultValue="default">
+                                <option disabled value="default">Access level</option>
                                 <option>Private</option>
                                 <option>Public</option>
                             </select>
@@ -81,7 +89,8 @@ export default function CreateCommunityForm() {
                             <span className="label-text">Community description</span>
                         </div>
                         <textarea name="description" className="textarea textarea-bordered"
-                                  placeholder="Describe briefly your community. Min chars count - 50, max - 1000">
+                                  placeholder="Describe briefly your community. Min chars count - 50, max - 1000 "
+                                  minLength={50} maxLength={1000} required>
                         </textarea>
                     </label>
 
