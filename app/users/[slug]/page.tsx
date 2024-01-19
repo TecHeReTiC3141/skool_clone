@@ -5,6 +5,18 @@ import {FaRegCalendar} from "react-icons/fa6";
 import Link from "next/link";
 import avatarPlaceholder from "@/public/avatar-placeholder.jpg";
 import Image from "next/image";
+import CommunityMembership from "@/app/users/[slug]/CommunityMembership";
+import {CommunityAccessLevel} from "@prisma/client";
+
+export type ProfileCommunity = {
+    name: string,
+    icon: string,
+    accessLevel: CommunityAccessLevel,
+    slug: string,
+    _count: {
+        members: number,
+    }
+}
 
 
 export default async function UserProfilePage({params: {slug}}: {
@@ -19,6 +31,22 @@ export default async function UserProfilePage({params: {slug}}: {
     const user = await prisma.user.findUnique({
         where: {
             slug,
+        },
+        include: {
+            communities: {
+                select: {
+                    name: true,
+                    icon: true,
+                    accessLevel: true,
+                    slug: true,
+                    _count: {
+                        select: {
+                            members: true,
+                        }
+                    }
+                },
+
+            }
         }
     });
     // console.log("in profile", user, currentUser);
@@ -28,11 +56,12 @@ export default async function UserProfilePage({params: {slug}}: {
             <h3>This user not found, maybe he does not exist or hidden</h3>
         )
     }
+    console.log(user);
 
     let joinDate = user.createdAt.toDateString();
     joinDate = joinDate.substring(joinDate.indexOf(" ") + 1);
     return (
-        <div className="flex justify-between w-full gap-6 mt-12">
+        <div className="max-w-6xl flex justify-between w-full gap-6 mt-12 m-auto">
             <div className="flex flex-col gap-6">
                 <div>
                     <h4 className="text-lg mb-8">Activity</h4>
@@ -40,8 +69,13 @@ export default async function UserProfilePage({params: {slug}}: {
                 </div>
 
                 <div>
-                    <h4 className="text-lg">Memberships</h4>
-                    <p>There will be your memberships</p>
+                    <h4 className="text-lg mb-4">Memberships</h4>
+                    {user.communities ?
+                        <div className="flex flex-col gap-4">
+                            {user.communities.map(community =>
+                                (<CommunityMembership key={community.slug} community={community}/>))}
+                        </div>
+                        : "You are not member of any communities, join some or create your own"}
                 </div>
 
                 <div>
@@ -54,7 +88,7 @@ export default async function UserProfilePage({params: {slug}}: {
                         <div className="w-full rounded-full border-4 border-primary">
                             {/* TODO: Turn into image */}
                             <Image src={user?.image || avatarPlaceholder.src} alt="Shoes"
-                                  width={280} height={280}/>
+                                   width={280} height={280}/>
                         </div>
                     </div>
                     <h2 className="card-title">{user.name}</h2>
