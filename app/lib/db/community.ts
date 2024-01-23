@@ -4,6 +4,7 @@ import prisma from "@/app/lib/db/prisma";
 import {Community, CommunityAccessLevel} from "@prisma/client";
 import {redirect} from "next/navigation";
 import slugify from "slugify";
+import {SessionUser} from "@/app/lib/db/user";
 
 export type CreateCommunityData = {
     creatorId: string,
@@ -16,7 +17,16 @@ export type CreateCommunityData = {
     description: string,
 }
 
-export async function createCommunity({creatorId, name, price, accessLevel, thumb, filters, icon, description}: CreateCommunityData) {
+export async function createCommunity({
+                                          creatorId,
+                                          name,
+                                          price,
+                                          accessLevel,
+                                          thumb,
+                                          filters,
+                                          icon,
+                                          description
+                                      }: CreateCommunityData) {
     const slug = slugify(name, {lower: true});
     await prisma.community.create({
         data: {
@@ -29,22 +39,49 @@ export async function createCommunity({creatorId, name, price, accessLevel, thum
             icon,
             description,
             members: {
-                connect: { id: creatorId }
+                connect: {id: creatorId}
             }
         }
     });
     return redirect(`/communities/${slug}`);
 }
 
-export type CommunityWithMembers = Community & {_count: { members: number }};
+export type CommunityWithMemberCount = Community & { _count: { members: number } };
 
-export async function getMainPageCommunities(): Promise<CommunityWithMembers[]> {
+export type CommunityWithMembers = Community & { members: SessionUser[] };
+
+
+export async function getMainPageCommunities(): Promise<CommunityWithMemberCount[]> {
     return await prisma.community.findMany({
-        orderBy: { memberCount: "desc" },
+        orderBy: {
+            members: {
+                _count: "desc",
+            }
+        },
         include: {
             _count: {
-                select: { members: true },
-            }
+                select: {members: true},
+            },
+        }
+    });
+}
+
+export async function getCommunityFromSlug(slug: string): Promise<(CommunityWithMemberCount & CommunityWithMembers) | null> {
+    return await prisma.community.findUnique({
+        where: { slug },
+        include: {
+            _count: {
+                select: {members: true},
+            },
+            members: {
+                select: {
+                    image: true,
+                    id: true,
+                    slug: true,
+                    email: true,
+                    name: true,
+                }
+            },
         }
     })
 }

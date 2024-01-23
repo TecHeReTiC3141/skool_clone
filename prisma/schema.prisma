@@ -79,10 +79,9 @@ model Community {
   accessLevel CommunityAccessLevel
   description String
   price       Int                  @default(0)
-  slug        String
+  slug        String               @unique
   filters     String[]
   userId      String?              @db.ObjectId
-  memberCount Int                  @default(1)
   memberIDs   String[]             @db.ObjectId
   members     User[]               @relation(fields: [memberIDs], references: [id])
 

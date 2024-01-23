@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import {CommunityWithMembers} from "@/app/lib/db/community";
+import {CommunityWithMemberCount} from "@/app/lib/db/community";
 
 interface CommunityCardProps {
-    community: CommunityWithMembers,
+    community: CommunityWithMemberCount,
 }
 
 export default function CommunityCard({community}: CommunityCardProps) {
@@ -11,7 +11,7 @@ export default function CommunityCard({community}: CommunityCardProps) {
     const MAX_DESCRIPTION_LENGTH = 100;
 
     return (
-        <Link href={`/communities/${community.slug}`} className="justify-self-center">
+        <Link href={`/communities/${community.slug}/community`} className="justify-self-center">
             <div
                 className="card card-compact w-[21rem] h-[24rem] bg-neutral hover:shadow-inner shadow-base-300 rounded-xl overflow-hidden">
                 <figure>
