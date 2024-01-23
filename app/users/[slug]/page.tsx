@@ -1,5 +1,4 @@
 import {getServerSession} from "next-auth";
-import prisma from "@/app/lib/db/prisma";
 import {authOptions} from "@/app/lib/config/authOptions";
 import {FaRegCalendar} from "react-icons/fa6";
 import Link from "next/link";
@@ -7,6 +6,7 @@ import avatarPlaceholder from "@/public/avatar-placeholder.jpg";
 import Image from "next/image";
 import CommunityMembership from "@/app/users/[slug]/CommunityMembership";
 import {CommunityAccessLevel} from "@prisma/client";
+import {getUserBySlug} from "@/app/lib/db/user";
 
 export type ProfileCommunity = {
     name: string,
@@ -28,28 +28,7 @@ export default async function UserProfilePage({params: {slug}}: {
 
     const currentUser = session?.user;
 
-    const user = await prisma.user.findUnique({
-        where: {
-            slug,
-        },
-        include: {
-            communities: {
-                select: {
-                    name: true,
-                    icon: true,
-                    accessLevel: true,
-                    slug: true,
-                    _count: {
-                        select: {
-                            members: true,
-                        }
-                    }
-                },
-
-            }
-        }
-    });
-    // console.log("in profile", user, currentUser);
+    const user = await getUserBySlug(slug);
 
     if (!user) {
         return (
@@ -70,12 +49,12 @@ export default async function UserProfilePage({params: {slug}}: {
 
                 <div>
                     <h4 className="text-lg mb-4">Memberships</h4>
-                    {user.communities ?
+                    {user.communities.length > 0 ?
                         <div className="flex flex-col gap-4">
-                            {user.communities.map(community =>
+                            {user.communities.map(({community}) =>
                                 (<CommunityMembership key={community.slug} community={community}/>))}
                         </div>
-                        : "You are not member of any communities, join some or create your own"}
+                        : <p>You are not member of any communities, join some or create your own</p>}
                 </div>
 
                 <div>
@@ -86,7 +65,6 @@ export default async function UserProfilePage({params: {slug}}: {
                 <div className="card-body">
                     <div className="avatar">
                         <div className="w-full rounded-full border-4 border-primary">
-                            {/* TODO: Turn into image */}
                             <Image src={user?.image || avatarPlaceholder.src} alt="Shoes"
                                    width={280} height={280}/>
                         </div>

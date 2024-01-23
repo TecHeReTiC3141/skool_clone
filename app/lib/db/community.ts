@@ -17,6 +17,16 @@ export type CreateCommunityData = {
     description: string,
 }
 
+export type CommunityMembershipData = {
+    name: string,
+    icon: string,
+    accessLevel: CommunityAccessLevel,
+    slug: string,
+    _count: {
+        members: number,
+    }
+}
+
 export async function createCommunity({
                                           creatorId,
                                           name,
