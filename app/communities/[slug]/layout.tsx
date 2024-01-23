@@ -10,7 +10,7 @@ interface CommunityLayoutProps {
     children: React.ReactNode,
 }
 
-export default async function CommunityPageLayout({ children, params: {slug}}: CommunityLayoutProps) {
+export default async function CommunityPageLayout({children, params: {slug}}: CommunityLayoutProps) {
 
     const community = await getCommunityFromSlug(slug);
 

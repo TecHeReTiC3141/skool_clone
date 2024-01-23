@@ -1,16 +1,17 @@
 "use client"
-import {usePathname} from "next/navigation";
+import {usePathname, useSearchParams} from "next/navigation";
 import Link from "next/link";
 import clsx from "clsx";
 
 export default function CommunityNavBar() {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     const sections = [
         "community", "classroom", "members", "calendar", "leaderboards", "about",
     ];
 
-    if (!pathname.startsWith("/communities")) {
+    if (!pathname.startsWith("/communities") || searchParams.has("notmember")) {
         return (
             <></>
         )

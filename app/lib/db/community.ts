@@ -85,3 +85,19 @@ export async function getCommunityFromSlug(slug: string): Promise<(CommunityWith
         }
     })
 }
+
+export async function checkIfUserInCommunity(userId: string, communityId: string) {
+    const community = await prisma.community.findUnique({
+        where: {
+            id: communityId,
+        },
+        select: {
+            members: {
+                where: {
+                    id: userId,
+                }
+            }
+        }
+    });
+    return community && community.members.length > 0;
+}
