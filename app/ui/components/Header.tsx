@@ -10,7 +10,7 @@ export default async function Header() {
 
     return (
         <div className="w-full bg-base-300 flex justify-center mb-4 border-b border-neutral shadow-lg shadow-base-300">
-            <div className="max-w-7xl w-full">
+            <div className="max-w-6xl w-full">
 
                 <header className="navbar w-full gap-3">
                     <div className="flex-1">
