@@ -38,6 +38,9 @@ export async function createCommunity({
             filters,
             icon,
             description,
+            creator: {
+                connect: {id: creatorId}
+            },
             members: {
                 connect: {id: creatorId}
             }
@@ -48,7 +51,7 @@ export async function createCommunity({
 
 export type CommunityWithMemberCount = Community & { _count: { members: number } };
 
-export type CommunityWithMembers = Community & { members: SessionUser[] };
+export type CommunityWithMembers = Community & { members: { user: SessionUser }[] };
 
 
 export async function getMainPageCommunities(): Promise<CommunityWithMemberCount[]> {
@@ -68,18 +71,22 @@ export async function getMainPageCommunities(): Promise<CommunityWithMemberCount
 
 export async function getCommunityFromSlug(slug: string): Promise<(CommunityWithMemberCount & CommunityWithMembers) | null> {
     return await prisma.community.findUnique({
-        where: { slug },
+        where: {slug},
         include: {
             _count: {
                 select: {members: true},
             },
             members: {
                 select: {
-                    image: true,
-                    id: true,
-                    slug: true,
-                    email: true,
-                    name: true,
+                    user: {
+                        select: {
+                            name: true,
+                            slug: true,
+                            image: true,
+                            id: true,
+                            email: true,
+                        }
+                    },
                 }
             },
         }
