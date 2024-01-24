@@ -1,6 +1,6 @@
 import Image from "next/image";
 import {FaGlobe, FaLock} from "react-icons/fa6";
-import {CommunityAccessLevel} from "@prisma/client";
+import {CommunityAccessLevel, CommunityUserRole} from "@prisma/client";
 import {checkIfUserInCommunity, CommunityWithMemberCount, CommunityWithMembers} from "@/app/lib/db/community";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/lib/config/authOptions";
@@ -13,7 +13,7 @@ export default async function CommunityInfoCard({community}: CommunityInfoCardPr
 
     const session = await getServerSession(authOptions);
 
-    const isMember = session && (await checkIfUserInCommunity(session.user.id, community.id))
+    const isMember = session && (await checkIfUserInCommunity(session.user.id, community.id));
 
     return (
         <div className="card card-compact min-w-72 w-72 bg-neutral shadow-xl">
@@ -49,6 +49,8 @@ export default async function CommunityInfoCard({community}: CommunityInfoCardPr
                 {isMember ? <button className="btn btn-block btn-primary uppercase">Settings</button> :
                     <button className="btn btn-block btn-primary uppercase">Join group</button>
                 }
+                {isMember?.role === CommunityUserRole.ADMIN ?
+                    <button className="btn btn-block btn-primary uppercase">Manage Community</button> : ""}
             </div>
         </div>
     )

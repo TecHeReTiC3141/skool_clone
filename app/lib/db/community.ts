@@ -144,9 +144,26 @@ export async function checkIfUserInCommunity(userId: string, communityId: string
             members: {
                 where: {
                     userId,
+                },
+                select: {
+                    role: true,
                 }
             }
         }
     });
-    return community && community.members.length > 0;
+    return community && community.members?.[0];
+}
+
+export async function addUserToCommunity(userId: string, communityId: string, communitySlug: string) {
+    await prisma.community.update({
+        where: { id: communityId },
+        data: {
+            members: {
+                create: {
+                    userId,
+                }
+            }
+        }
+    });
+    return redirect(`/communities/${communitySlug}/community`);
 }
