@@ -26,7 +26,9 @@ export default async function CommunityAboutPage({params: {slug}}: CommunityAbou
     return (
         <div className="w-full flex flex-col gap-6 bg-neutral rounded-xl px-6 py-6">
             <h2 className="font-bold text-xl">{community.name}</h2>
-            <Carousel pics={community.aboutImages}/>
+            {community.aboutImages ? <Carousel pics={community.aboutImages}/> :
+                <Image src={community.thumb} alt={community.name} width={800} height={600}
+                       className="w-full max-h-96 rounded-lg object-cover" />}
             <div className="flex items-center gap-12 text-lg ">
                 <p className="flex gap-1 items-center">{community.accessLevel === CommunityAccessLevel.PUBLIC ?
                     <FaGlobe/> : <FaLock/>}

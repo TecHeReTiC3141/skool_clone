@@ -4,6 +4,7 @@ import {CommunityAccessLevel, CommunityUserRole} from "@prisma/client";
 import {checkIfUserInCommunity, CommunityWithMemberCount, CommunityWithMembers} from "@/app/lib/db/community";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/lib/config/authOptions";
+import CommunityJoinButton from "@/app/communities/[slug]/CommunityJoinButton";
 
 interface CommunityInfoCardProps {
     community: CommunityWithMemberCount & CommunityWithMembers,
@@ -47,7 +48,7 @@ export default async function CommunityInfoCard({community}: CommunityInfoCardPr
                 </div>
                 <div className="divider h-1 my-0"></div>
                 {isMember ? <button className="btn btn-block btn-primary uppercase">Settings</button> :
-                    <button className="btn btn-block btn-primary uppercase">Join group</button>
+                    <CommunityJoinButton user={session?.user} community={community} />
                 }
                 {isMember?.role === CommunityUserRole.ADMIN ?
                     <button className="btn btn-block btn-primary uppercase">Manage Community</button> : ""}
