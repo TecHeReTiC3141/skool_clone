@@ -6,6 +6,7 @@ import {User} from "@prisma/client";
 import slugify from "slugify";
 import bcrypt from "bcrypt"
 import {revalidatePath} from "next/cache";
+import {CommunityMembershipData} from "@/app/lib/db/community";
 
 interface UserCredentials {
     name: string,
@@ -26,7 +27,9 @@ export type SessionUser =
     name?: string | null | undefined,
     email?: string | null | undefined,
     image?: string | null | undefined
-} | undefined
+} | undefined;
+
+export type UserWithCommunities = User & {communities: { community: CommunityMembershipData}[]}
 
 export async function createUser({name, email, password}: UserCredentials): Promise<User> {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -51,4 +54,33 @@ export async function updateUserImage(id: string, newUrl: string) {
         }
     });
     revalidatePath("/settings");
+}
+
+export async function getUserBySlug(slug: string): Promise<UserWithCommunities | null> {
+    return await prisma.user.findUnique({
+        where: {
+            slug,
+        },
+        include: {
+            communities: {
+                include: {
+                    community: {
+                        select: {
+                            name: true,
+                            icon: true,
+                            accessLevel: true,
+                            slug: true,
+                            _count: {
+                                select: {
+                                    members: true,
+                                }
+                            }
+
+                        },
+                    }
+
+                }
+            }
+        }
+    });
 }

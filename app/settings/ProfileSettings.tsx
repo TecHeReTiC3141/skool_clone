@@ -6,6 +6,7 @@ import {UserSettings} from "@/app/lib/db/user";
 import SubmitBtn from "@/app/ui/components/SubmitBtn";
 import FileUpload from "@/app/ui/components/FileUpload";
 import avatarPlaceholder from "@/public/avatar-placeholder.jpg";
+import Image from "next/image";
 
 interface ProfileSettingsProps {
     user: User,
@@ -28,7 +29,7 @@ export default function ProfileSettings({user, updateUserSettings}: ProfileSetti
         };
         console.log(data);
         await updateUserSettings(user.id, data);
-        const updateButton = document.querySelector("#update-profile")!;
+        const updateButton = document.querySelector("#submit-btn")!;
         updateButton.setAttribute("disabled", "");
     }
 
@@ -40,19 +41,20 @@ export default function ProfileSettings({user, updateUserSettings}: ProfileSetti
                 <div className="avatar">
                     <div className="w-16 rounded-full">
                         {/* Turn into image */}
-                        <img src={user?.image || avatarPlaceholder.src} alt="Shoes"
-                             width={32} height={32}/>
+                        <Image src={user?.image || avatarPlaceholder.src} alt="Shoes"
+                             width={160} height={160}/>
                     </div>
                 </div>
                 <p>Change photo</p>
             </div>
             <FileUpload user={user} />
             <form action={handleSubmit} className="flex flex-col gap-4" onChange={event => {
-                const updateButton = document.querySelector("#update-profile")!;
+                const updateButton = document.querySelector("#submit-btn")!;
                 const form = event.currentTarget as HTMLFormElement;
                 const data = new FormData(form);
-                for (const key of data.keys()) {
-                    if (key in user && data.get(key) !== user[ key ]) {
+                for (const key  in user) {
+                    const keyTyped = key as keyof typeof user;
+                    if (data.get(key) !== user[ keyTyped ]) {
                         updateButton.removeAttribute("disabled");
                         return;
                     }
@@ -70,7 +72,8 @@ export default function ProfileSettings({user, updateUserSettings}: ProfileSetti
                     <div className="label">
                         <span className="label-text">Your bio:</span>
                     </div>
-                    <textarea name="description" className="textarea textarea-bordered" placeholder="Bio" defaultValue={user.description || ""}>
+                    <textarea name="description" className="textarea textarea-bordered"
+                              placeholder="Bio" defaultValue={user.description || ""}>
 
                     </textarea>
                 </label>

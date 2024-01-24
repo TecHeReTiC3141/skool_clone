@@ -4,6 +4,7 @@ import prisma from "@/app/lib/db/prisma";
 import {Adapter} from "next-auth/adapters";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
+import {User} from "@prisma/client";
 
 export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma) as Adapter,
@@ -54,10 +55,18 @@ export const authOptions: NextAuthOptions = {
             }
             return token;
         },
-        session({session, token }) {
+
+        async session({session, token }) {
             session.accessToken = token.accessToken as string;
             session.user.id = token.id as string;
             session.user.slug = token.slug as string;
+            const user =  await prisma.user.findUnique({
+                where: {id: token.id as string},
+                select: {
+                    image: true,
+                }
+            })!;
+            session.user.image = (user as User).image;
             return session;
         },
     },
