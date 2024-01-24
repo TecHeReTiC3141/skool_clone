@@ -54,8 +54,10 @@ model User {
   sessions           Session[]
   followingNumber    Int                   @default(0)
   followersNumber    Int                   @default(0)
-  createdCommunities Community[]           @relation("Creator")
+  createdCommunities Community[]           @relation("CommunityCreator")
   communities        CommunityMembership[]
+  posts              Post[]
+  comments           Comment[]
 
   // Implement MANY-TO-MANy relations between follower
   @@map("users")
@@ -80,13 +82,14 @@ model Community {
   description      String
   aboutImages      String[]
   aboutDescription String?
-  creator          User                  @relation("Creator", fields: [creatorId], references: [id])
+  creator          User                  @relation("CommunityCreator", fields: [creatorId], references: [id])
   creatorId        String                @db.ObjectId
   price            Int                   @default(0)
   slug             String                @unique
   filters          String[]
   userId           String?               @db.ObjectId
   members          CommunityMembership[]
+  posts            Post[]
 
   @@map("communities")
 }
@@ -111,4 +114,28 @@ enum CommunityAccessLevel {
 enum CommunityUserRole {
   MEMBER
   ADMIN
+}
+
+model Post {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String?
+  content     String
+  creator     User      @relation(fields: [creatorId], references: [id])
+  creatorId   String    @db.ObjectId
+  community   Community @relation(fields: [communityId], references: [id])
+  communityId String    @db.ObjectId
+  likes       Int       @default(0)
+  comments    Comment[]
+}
+
+model Comment {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  content           String
+  creator           User      @relation(fields: [creatorId], references: [id])
+  creatorId         String    @db.ObjectId
+  Post              Post      @relation(fields: [postId], references: [id])
+  postId            String    @db.ObjectId
+  answeredComment   Comment?  @relation("CommentReplies", fields: [answeredCommentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  answeredCommentId String?   @db.ObjectId
+  replies           Comment[] @relation("CommentReplies")
 }
