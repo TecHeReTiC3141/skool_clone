@@ -5,9 +5,11 @@ import {useEdgeStore} from "@/app/lib/edgestore";
 import {CommunityAccessLevel} from "@prisma/client";
 import {createCommunity} from "@/app/lib/db/community";
 import FilterSelector from "@/app/create-new-community/FilterSelector";
-import {SingleImageDropzone} from "@/app/ui/components/SingleImageDropzone";
+import {SingleImageDropzone} from "@/app/ui/components/edgestore/SingleImageDropzone";
 import SubmitBtn from "@/app/ui/components/SubmitBtn";
 import {SessionUser} from "@/app/lib/db/user";
+import MultiImageDropzone from "@/app/ui/components/edgestore/MultipleImageDropzone";
+import {FileState} from "@/app/ui/components/edgestore/config";
 
 
 interface CreateCommunityFormProps {
@@ -20,6 +22,21 @@ export default function CreateCommunityForm({user}: CreateCommunityFormProps) {
     const [ icon, setIcon ] = useState<File>();
     const [ filters, setFilters ] = useState<string[]>([]);
     const [ progress, setProgress ] = useState(0);
+    const [ fileStates, setFileStates ] = useState<FileState[]>([]);
+
+    function updateFileProgress(key: string, progress: FileState['progress']) {
+        setFileStates((fileStates) => {
+            const newFileStates = structuredClone(fileStates);
+            const fileState = newFileStates.find(
+                (fileState) => fileState.key === key,
+            );
+            if (fileState) {
+                fileState.progress = progress;
+            }
+            return newFileStates;
+        });
+    }
+
     const {edgestore} = useEdgeStore();
 
     async function handleSubmit(formData: FormData) {
@@ -40,17 +57,45 @@ export default function CreateCommunityForm({user}: CreateCommunityFormProps) {
                 setProgress(progress);
             },
         });
+        const aboutImages: string[] = [];
 
         const data = {
             name: formData.get("name") as string,
             description: formData.get("description") as string,
             price: Number(formData.get("price") as string) * 100,
             accessLevel: formData.get("access-level")?.toString().toUpperCase() as CommunityAccessLevel,
+            aboutDescription: formData.get("about-description") as string,
             thumb: resThumb.url,
             icon: resIcon.url,
             filters,
             creatorId: user.id,
+            aboutImages,
         }
+
+
+        await Promise.all(
+            fileStates.map(async (fileStates) => {
+                try {
+                    const res = await edgestore.publicImages.upload({
+                        file: fileStates.file,
+                        input: {type: "community/about"},
+                        onProgressChange: async (progress) => {
+                            updateFileProgress(fileStates.key, progress);
+                            if (progress === 100) {
+                                // wait 1 second to set it to complete
+                                // so that the user can see the progress bar at 100%
+                                await new Promise((resolve) => setTimeout(resolve, 1000));
+                                updateFileProgress(fileStates.key, 'COMPLETE');
+                            }
+                        },
+                    });
+                    aboutImages.push(res.url);
+                    console.log(res);
+                } catch (err) {
+                    updateFileProgress(fileStates.key, 'ERROR');
+                }
+            }),
+        );
 
         console.log(data, Object.fromEntries(formData));
 
@@ -141,6 +186,27 @@ export default function CreateCommunityForm({user}: CreateCommunityFormProps) {
                         </div>
                     </label>
 
+                    <div className="divider h-1"></div>
+                    <h3 className="text-center text-xl font-bold">About page</h3>
+
+                    <label className="form-control w-full">
+                        <div className="label">
+                            <span className="label-text">Community description</span>
+                        </div>
+                        <textarea name="about-description" className="textarea textarea-bordered"
+                                  placeholder="This text will be displayed on the About page for new members (optional)">
+                        </textarea>
+                    </label>
+
+                    <MultiImageDropzone value={fileStates}
+                                        className="mt-4"
+                                        dropzoneOptions={{
+                                            maxFiles: 6,
+                                        }}
+                                        onChange={(files) => {
+                                            setFileStates(files);
+                                        }}
+                                        onFilesAdded={() => {}}></MultiImageDropzone>
 
                     <SubmitBtn className="btn-block mt-4">
                         Create community

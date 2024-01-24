@@ -25,7 +25,7 @@ export default async function CommunityAboutPage({params: {slug}}: CommunityAbou
 
     return (
         <div>
-            Community {community.name}
+            Community posts will be here...
         </div>
     )
 }

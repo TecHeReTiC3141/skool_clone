@@ -9,7 +9,7 @@ const edgeStoreRouter = es.router({
         maxSize: 1024 * 1024,
     }).input(
         z.object({
-            type: z.enum(["post", "profile", "community/thumb", "community/icon"]),
+            type: z.enum(["post", "profile", "community/thumb", "community/icon", "community/about"]),
         })
     ).path(({input}) => [{ type: input.type }]),
 
