@@ -17,6 +17,8 @@ export default async function Header() {
                         <Link className="btn btn-ghost text-2xl text-accent" href="/">
                             Skool
                         </Link>
+                        {/* TODO: implement section with link to main/create community pages and
+                                also to also communities the user is member of */}
                     </div>
                     <NotificationsBtn session={session}/>
                     <UserMenuBtn session={session}/>
@@ -34,7 +36,7 @@ export default async function Header() {
                         </svg>
                     </label>
                 </header>
-                <CommunityNavBar />
+                <CommunityNavBar/>
             </div>
         </div>
     )

@@ -47,9 +47,11 @@ export default async function CommunityInfoCard({community}: CommunityInfoCardPr
                     </button>
                 </div>
                 <div className="divider h-1 my-0"></div>
+                {/* TODO: implement community settings (notifications, leave and etc.) for all members */}
                 {isMember ? <button className="btn btn-block btn-primary uppercase">Settings</button> :
                     <CommunityJoinButton user={session?.user} community={community} />
                 }
+                {/* TODO: implement community management for admins */}
                 {isMember?.role === CommunityUserRole.ADMIN ?
                     <button className="btn btn-block btn-primary uppercase">Manage Community</button> : ""}
             </div>
