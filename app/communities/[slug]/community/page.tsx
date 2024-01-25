@@ -2,6 +2,7 @@ import {checkIfUserInCommunity, getCommunityFromSlug} from "@/app/lib/db/communi
 import {redirect} from "next/navigation";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/lib/config/authOptions";
+import AddNewPost from "@/app/communities/[slug]/community/AddNewPost";
 
 interface CommunityAboutPageProps {
     params: {
@@ -25,6 +26,7 @@ export default async function CommunityAboutPage({params: {slug}}: CommunityAbou
 
     return (
         <div>
+            <AddNewPost user={session.user} community={community}/>
             Community posts will be here...
         </div>
     )

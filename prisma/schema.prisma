@@ -126,6 +126,9 @@ model Post {
   communityId String    @db.ObjectId
   likes       Int       @default(0)
   comments    Comment[]
+  createdAt   DateTime  @default(now())
+
+  @@map("posts")
 }
 
 model Comment {
@@ -135,7 +138,10 @@ model Comment {
   creatorId         String    @db.ObjectId
   Post              Post      @relation(fields: [postId], references: [id])
   postId            String    @db.ObjectId
+  createdAt         DateTime  @default(now())
   answeredComment   Comment?  @relation("CommentReplies", fields: [answeredCommentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   answeredCommentId String?   @db.ObjectId
   replies           Comment[] @relation("CommentReplies")
+
+  @@map("commnents")
 }
