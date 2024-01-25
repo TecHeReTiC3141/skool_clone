@@ -57,7 +57,6 @@ model User {
   createdCommunities Community[]           @relation("CommunityCreator")
   communities        CommunityMembership[]
   postsWritten       Post[]                @relation("PostsWritten")
-  comments           Comment[]
   postsLiked         Post[]                @relation("Likes", fields: [postLikedIds], references: [id])
   postLikedIds       String[]              @db.ObjectId
 
@@ -130,7 +129,7 @@ model Post {
   communityId    String    @db.ObjectId
   userLikes      User[]    @relation("Likes", fields: [userLikesIds], references: [id])
   userLikesIds   String[]  @db.ObjectId
-  answeredPost   Post?     @relation("PostComments", fields: [answeredCommentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  answeredPost   Post?     @relation("PostComments", fields: [answeredPostId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   answeredPostId String?   @db.ObjectId
   comments       Post[]    @relation("PostComments")
   createdAt      DateTime  @default(now())
