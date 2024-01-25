@@ -1,12 +1,13 @@
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/lib/config/authOptions";
-import {FaRegCalendar} from "react-icons/fa6";
+import {FaRegCalendar, FaRegComment} from "react-icons/fa6";
 import Link from "next/link";
 import avatarPlaceholder from "@/public/avatar-placeholder.jpg";
 import Image from "next/image";
 import CommunityMembership from "@/app/users/[slug]/CommunityMembership";
 import {CommunityAccessLevel} from "@prisma/client";
 import {getUserBySlug} from "@/app/lib/db/user";
+
 
 export type ProfileCommunity = {
     name: string,
@@ -35,7 +36,6 @@ export default async function UserProfilePage({params: {slug}}: {
             <h3>This user not found, maybe he does not exist or hidden</h3>
         )
     }
-    console.log(user);
 
     let joinDate = user.createdAt.toDateString();
     joinDate = joinDate.substring(joinDate.indexOf(" ") + 1);
@@ -98,8 +98,12 @@ export default async function UserProfilePage({params: {slug}}: {
                     </div>
                     <div className="divider h-1 my-0"></div>
 
-                    {currentUser?.id === user.id &&
-                        <Link href="/settings" className="btn btn-primary btn-wide">Edit profile</Link>
+                    {currentUser?.id === user.id ?
+                        <Link href="/settings" className="btn btn-primary btn-wide">Edit profile</Link> :
+                        <div className="w-full">
+                            <button className="btn btn-primary btn-block uppercase mb-3">Follow</button>
+                            <button className="btn btn-primary btn-block uppercase">Chat <FaRegComment /></button>
+                        </div>
                     }
                 </div>
             </div>
