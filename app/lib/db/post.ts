@@ -2,6 +2,7 @@
 import prisma from "@/app/lib/db/prisma";
 import {revalidatePath} from "next/cache";
 import {Post, User} from "@prisma/client";
+import {POSTS_ON_PAGE} from "@/app/lib/params";
 
 export interface PostCreateData {
     title?: string,
@@ -30,7 +31,7 @@ export type PostWithLikesNumber = Post & { _count: { userLikes: number } };
 
 export type CommunityPagePost = PostWithCreator & PostWithCommentsNumber & PostWithLikesNumber;
 
-export async function getCommunityPosts(communityId: string): Promise<(CommunityPagePost)[]> {
+export async function getCommunityPosts(communityId: string, page: number ): Promise<(CommunityPagePost)[]> {
     return await prisma.post.findMany({
         where: {communityId},
         include: {
@@ -42,6 +43,8 @@ export async function getCommunityPosts(communityId: string): Promise<(Community
                 }
             }
         },
+        skip: (page - 1) * POSTS_ON_PAGE,
+        take: POSTS_ON_PAGE,
         orderBy: {createdAt: "desc"},
     });
 }

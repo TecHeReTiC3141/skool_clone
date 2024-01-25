@@ -17,7 +17,7 @@ export default async function CommunityInfoCard({community}: CommunityInfoCardPr
     const isMember = session && (await checkIfUserInCommunity(session.user.id, community.id));
 
     return (
-        <div className="card card-compact min-w-72 w-72 bg-neutral shadow-xl">
+        <div className="card card-compact min-w-72 sm:w-72 w-full bg-neutral shadow-xl">
             <figure><Image src={community.thumb} alt={community.name}
                            width={280} height={280} className="w-full"/></figure>
             <div className="card-body">

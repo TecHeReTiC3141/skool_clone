@@ -1,11 +1,11 @@
 "use client"
 
-
 import {useState} from "react";
 import {SessionUser} from "@/app/lib/db/user";
 import {Community} from "@prisma/client";
 import UserAvatar from "@/app/users/[slug]/UserAvatar";
 import {createPost, PostCreateData} from "@/app/lib/db/post";
+import SubmitBtn from "@/app/ui/components/SubmitBtn";
 
 interface AddNewPostProps {
     user: NonNullable<SessionUser>,
@@ -22,7 +22,6 @@ export default function AddNewPost({user, community}: AddNewPostProps) {
             creatorId: user.id,
             communityId: community.id,
         }
-
         await createPost(data);
         setIsOpened(false);
     }
@@ -60,9 +59,8 @@ export default function AddNewPost({user, community}: AddNewPostProps) {
                             setIsOpened(false);
                         }}>Cancel
                         </button>
-                        <button className="btn btn-primary uppercase btn-sm px-2" id="submit-btn" disabled>Post</button>
+                        <SubmitBtn className="btn-sm px-2">Post</SubmitBtn>
                     </div>
-
                 </form>
             </>
         )
