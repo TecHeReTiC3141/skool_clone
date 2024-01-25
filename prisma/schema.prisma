@@ -101,6 +101,8 @@ model CommunityMembership {
   user        User              @relation(fields: [userId], references: [id])
   userId      String            @db.ObjectId
   role        CommunityUserRole @default(MEMBER)
+  level       Int               @default(1)
+  points      Int               @default(0)
 
   @@index([userId, communityId])
   @@map("community_memberships")

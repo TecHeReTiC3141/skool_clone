@@ -5,6 +5,7 @@ import {useState} from "react";
 import {SessionUser} from "@/app/lib/db/user";
 import {Community} from "@prisma/client";
 import UserAvatar from "@/app/users/[slug]/UserAvatar";
+import {createPost, PostCreateData} from "@/app/lib/db/post";
 
 interface AddNewPostProps {
     user: NonNullable<SessionUser>,
@@ -14,8 +15,16 @@ interface AddNewPostProps {
 export default function AddNewPost({user, community}: AddNewPostProps) {
     const [ isOpened, setIsOpened ] = useState(false);
 
-    function handleSubmit(formData: FormData) {
+    async function handleSubmit(formData: FormData) {
+        const data: PostCreateData = {
+            title: formData.get("title") as string,
+            content: formData.get("content") as string,
+            creatorId: user.id,
+            communityId: community.id,
+        }
 
+        await createPost(data);
+        setIsOpened(false);
     }
 
     if (isOpened) {
@@ -31,8 +40,8 @@ export default function AddNewPost({user, community}: AddNewPostProps) {
                             className="font-bold">{community.name}</span></p>
                     </h2>
                     <input type="text" name="title" placeholder="Title"
-                           className="bg-transparent border-none focus:outline-none text-lg"/>
-                    <textarea name="content" cols={30} rows={4}
+                           className="bg-transparent border-none focus:outline-none text-lg font-bold"/>
+                    <textarea name="content" cols={30} rows={4} required
                               className="bg-transparent border-none focus:outline-none resize-none overflow-y-hidden"
                               onInput={ev => {
                                   const submitBtn = document.querySelector("#submit-btn") as HTMLButtonElement;
