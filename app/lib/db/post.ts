@@ -3,18 +3,21 @@ import prisma from "@/app/lib/db/prisma";
 import {revalidatePath} from "next/cache";
 import {Post, User} from "@prisma/client";
 import {POSTS_ON_PAGE} from "@/app/lib/params";
+import slugify from "slugify";
 
 export interface PostCreateData {
-    title?: string,
+    title: string,
     content: string,
     creatorId: string,
     communityId: string,
 }
 
 export async function createPost({title, content, creatorId, communityId}: PostCreateData) {
+    const slug = slugify(title, { lower: true });
     await prisma.post.create({
         data: {
             title,
+            slug,
             content,
             creatorId,
             communityId,

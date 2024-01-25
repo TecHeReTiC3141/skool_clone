@@ -11,12 +11,13 @@ import prisma from "@/app/lib/db/prisma";
 interface CommunityAboutPageProps {
     params: {
         slug: string,
+        post?: string,
     },
     searchParams: {
         page: string,
     }
 }
-export default async function CommunityAboutPage({params: {slug}, searchParams: {page = "1"}}: CommunityAboutPageProps) {
+export default async function CommunityAboutPage({params: {slug, post}, searchParams: {page = "1"}}: CommunityAboutPageProps) {
 
     const currentPage = +page;
     console.log("in about page", slug, currentPage);
@@ -43,7 +44,7 @@ export default async function CommunityAboutPage({params: {slug}, searchParams: 
         <>
             <AddNewPost user={session.user} community={community}/>
             {posts.length > 0 ? <div className="w-full flex flex-col gap-6"> {posts.map(post => (
-                    <PostCard user={session.user} post={post} key={post.id}/>
+                    <PostCard user={session.user} communitySlug={community.slug} post={post} key={post.id}/>
                 ))} </div>
             : <p>There are no posts yet, create first!</p>}
             <PaginationBar currentPage={currentPage} totalPosts={totalPosts}/>

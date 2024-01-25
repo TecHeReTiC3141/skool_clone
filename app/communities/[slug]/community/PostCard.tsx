@@ -8,15 +8,16 @@ import LikeButton from "@/app/communities/[slug]/community/LikeButton";
 
 interface PostCardProps {
     user: NonNullable<SessionUser>,
+    communitySlug: string,
     post: CommunityPagePost,
 }
 
-export default async function PostCard({user, post}: PostCardProps) {
+export default async function PostCard({user, communitySlug, post}: PostCardProps) {
 
     const isLikeSet = await isLiked(user.id, post.id);
 
     return (
-        <div className="w-full rounded-lg bg-neutral p-4">
+        <Link href={`community/${post.slug}`} className="w-full rounded-lg bg-neutral p-4 cursor-pointer">
             <div className="flex gap-3 items-center">
                 <UserAvatar user={post.creator} width={32} height={32}/>
                 <div>
@@ -35,6 +36,6 @@ export default async function PostCard({user, post}: PostCardProps) {
                     <FaRegComment/> {post._count.comments}
                 </div>
             </div>
-        </div>
+        </Link>
     )
 }

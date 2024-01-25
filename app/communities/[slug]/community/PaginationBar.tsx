@@ -17,11 +17,13 @@ export default function PaginationBar({currentPage, totalPosts}: PaginationProps
     const pathname = usePathname(), searchParams = useSearchParams();
     const pagesBtns: JSX.Element[] = [];
 
+    if (totalPages === 1) return <></>
+
     const firstPageSearchParams = new URLSearchParams(searchParams);
     firstPageSearchParams.set("page", "1");
 
     const lastPageSearchParams = new URLSearchParams(searchParams);
-    firstPageSearchParams.set("page", totalPages.toString());
+    lastPageSearchParams.set("page", totalPages.toString());
 
     const prevPageSearchParams = new URLSearchParams(searchParams);
     prevPageSearchParams.set("page", (currentPage - 1).toString());
@@ -85,11 +87,11 @@ export default function PaginationBar({currentPage, totalPosts}: PaginationProps
         <div className="my-4 px-2 w-full flex gap-2 justify-between items-center">
 
             <div className="flex gap-4">
-                <Link href={`${pathname}?${prevPageSearchParams.toString()}`}
-                      className="btn rounded-full btn-ghost text-sm"><FaAngleLeft/> Previous</Link>
+                {currentPage > 1 && <Link href={`${pathname}?${prevPageSearchParams.toString()}`}
+                       className="btn rounded-full btn-ghost text-sm"><FaAngleLeft/> Previous</Link>}
                 {pagesBtns}
-                <Link href={`${pathname}?${nextPageSearchParams.toString()}`}
-                      className="btn rounded-full btn-ghost text-sm">Next <FaAngleRight/></Link>
+                {currentPage < totalPages && <Link href={`${pathname}?${nextPageSearchParams.toString()}`}
+                       className="btn rounded-full btn-ghost text-sm">Next <FaAngleRight/></Link>}
             </div>
             <p className="text-sm">{(currentPage - 1) * POSTS_ON_PAGE + 1}-{currentPage * POSTS_ON_PAGE} of {totalPosts}</p>
         </div>

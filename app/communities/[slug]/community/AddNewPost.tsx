@@ -38,7 +38,7 @@ export default function AddNewPost({user, community}: AddNewPostProps) {
                         <p><span className="font-bold">{user.name}</span> posting in <span
                             className="font-bold">{community.name}</span></p>
                     </h2>
-                    <input type="text" name="title" placeholder="Title"
+                    <input type="text" name="title" placeholder="Title" required
                            className="bg-transparent border-none focus:outline-none text-lg font-bold"/>
                     <textarea name="content" cols={30} rows={4} required
                               className="bg-transparent border-none focus:outline-none resize-none overflow-y-hidden"
