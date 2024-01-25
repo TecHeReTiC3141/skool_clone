@@ -13,7 +13,7 @@ export interface PostCreateData {
 }
 
 export async function createPost({title, content, creatorId, communityId}: PostCreateData) {
-    const slug = slugify(title, { lower: true });
+    const slug = slugify(title + "-" + Math.random() * 10000, { lower: true });
     await prisma.post.create({
         data: {
             title,
