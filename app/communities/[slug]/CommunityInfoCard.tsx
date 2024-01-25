@@ -21,10 +21,13 @@ export default async function CommunityInfoCard({community}: CommunityInfoCardPr
             <figure><Image src={community.thumb} alt={community.name}
                            width={280} height={280} className="w-full"/></figure>
             <div className="card-body">
-                <h2 className="card-title">{community.name}</h2>
+                <div className="flex gap-4 items-center">
+                    <h2 className="card-title">{community.name}</h2>
+                    <p className="text-sm badge badge-primary">@{community.slug}</p>
+                </div>
                 <p className="text-sm flex gap-1 items-center">{community.accessLevel === CommunityAccessLevel.PUBLIC ? <FaGlobe /> : <FaLock />}
                     {community.accessLevel[0] + community.accessLevel.slice(1).toLowerCase()} group</p>
-                <p className="text-sm">@{community.slug}</p>
+
                 <p className="text-sm">{community.description}</p>
 
                 <div className="divider h-1 my-0"></div>

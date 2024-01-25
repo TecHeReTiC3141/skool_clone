@@ -19,7 +19,7 @@ export default async function CommunityPageLayout({children, params: {slug}}: Co
     }
 
     return (
-        <div className="max-w-6xl flex justify-between items-start w-full gap-6 mt-12 m-auto">
+        <div className="max-w-6xl flex justify-between items-start w-full gap-12 mt-12 m-auto">
             <div className="w-full">
                 {children}
             </div>
