@@ -33,7 +33,7 @@ export default async function CommunityAboutPage({params: {slug}}: CommunityAbou
         <div>
             <AddNewPost user={session.user} community={community}/>
             {posts.length > 0 ? <div className="w-full flex flex-col gap-6"> {posts.map(post => (
-                    <PostCard post={post} key={post.id}/>
+                    <PostCard user={session.user} post={post} key={post.id}/>
                 ))} </div>
             : <p>There are no posts yet, create first!</p>}
         </div>
