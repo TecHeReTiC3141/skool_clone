@@ -10,10 +10,10 @@ const config: Config = {
         daisyui: {
             themes: [
                 {
-                    dark: {
+                    customDark: {
                         "primary": "#009bff",
                         "secondary": "#6366f1",
-                        "accent": "#fdfdfd",
+                        "accent": "#ececec",
                         "neutral": "#374151",
                         "base-100": "#1f2937",
                         "info": "#00c2fe",
@@ -21,7 +21,7 @@ const config: Config = {
                         "warning": "#ea580c",
                         "error": "#be123c",
                     },
-                    light: {
+                    customLight: {
                         "primary": "#67e8f9",
                         "secondary": "#facc15",
                         "accent": "#070001",

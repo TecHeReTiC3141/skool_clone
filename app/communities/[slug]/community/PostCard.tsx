@@ -7,6 +7,7 @@ import {FaRegComment} from "react-icons/fa6";
 import {formatTimeAgo} from "@/app/lib/utils/formating";
 import {SessionUser} from "@/app/lib/db/user";
 import LikeButton from "@/app/communities/[slug]/community/LikeButton";
+import OpenedPost from "@/app/communities/[slug]/community/OpenedPost";
 
 interface PostCardProps {
     user: NonNullable<SessionUser>,
@@ -35,7 +36,7 @@ export default function PostCard({user, post, isLikeSet}: PostCardProps) {
                 <div className="flex gap-4 mt-4">
                     <div className="flex gap-2 items-center">
                         <LikeButton disabled={post.creatorId === user.id} userId={user.id} postId={post.id}
-                                    isLikeSet={isLikeSet} className="btn btn-ghost btn-circle btn-sm text-lg flex" />
+                                    isLikeSet={isLikeSet} className="btn btn-ghost btn-circle btn-sm text-lg flex"/>
                         {post._count.userLikes}
                     </div>
                     <div className="flex gap-2 items-center">
@@ -43,46 +44,7 @@ export default function PostCard({user, post, isLikeSet}: PostCardProps) {
                     </div>
                 </div>
             </div>
-            <dialog id={`opened_post_${post.slug}`} className="modal">
-                <div className="bg-neutral rounded-lg p-8 max-w-2xl w-full absolute top-16">
-                    <div className="flex justify-between items-center mb-4">
-
-                        <div className="flex gap-3 items-center">
-                            <UserAvatar user={post.creator} width={40} height={40}/>
-                            <div>
-                                <Link className="font-bold"
-                                      href={`/users/${post.creator.slug}`}>{post.creator.name}</Link>
-                                <p className="text-xs">{formatTimeAgo(post.createdAt)}</p>
-                            </div>
-                        </div>
-                        <div className="flex gap-2">
-                            <div className="tooltip tooltip-accent tooltip-bottom"
-                                 data-tip="Get notification when there is a new post activity">
-                                <button className="btn btn-outline btn-sm px-2">Watch</button>
-                            </div>
-                            <button className="btn btn-outline btn-sm px-2">...</button>
-                        </div>
-                    </div>
-                    <h3 className="font-bold text-xl">{post.title}</h3>
-                    <p className="py-4">{post.content}</p>
-
-                    <div className="flex gap-4 items-center">
-                        <div className="join bg-transparent">
-                            <LikeButton disabled={post.creatorId === user.id}
-                                        userId={user.id} postId={post.id}
-                                        className="btn join-item bg-transparent hover:bg-transparent  text-sm flex w-24"
-                                        isLikeSet={isLikeSet}>{isLikeSet ?
-                                <span className="font-bold text-sm">Liked</span> : <span>Like</span>}
-                            </LikeButton>
-                            <button className="btn join-item bg-transparent">{post._count.userLikes}</button>
-                        </div>
-                        <div className="flex gap-3 items-center"><FaRegComment/> {post._count.comments} comments</div>
-                    </div>
-                </div>
-                <form method="dialog" className="modal-backdrop">
-                    <button>close</button>
-                </form>
-            </dialog>
+            <OpenedPost user={user} isLikeSet={isLikeSet} post={post} />
         </>
     )
 }

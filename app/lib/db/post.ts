@@ -36,7 +36,10 @@ export type CommunityPagePost = PostWithCreator & PostWithCommentsNumber & PostW
 
 export async function getCommunityPosts(communityId: string, page: number ): Promise<(CommunityPagePost)[]> {
     return await prisma.post.findMany({
-        where: {communityId},
+        where: {
+            communityId,
+            answeredPost: null,
+        },
         include: {
             creator: true,
             _count: {
