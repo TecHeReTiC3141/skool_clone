@@ -16,6 +16,7 @@ interface CommunityAboutPageProps {
         page: string,
     }
 }
+
 export default async function CommunityAboutPage({params: {slug}, searchParams: {page = "1"}}: CommunityAboutPageProps) {
 
     const currentPage = +page;
@@ -45,9 +46,10 @@ export default async function CommunityAboutPage({params: {slug}, searchParams: 
         <>
             <AddNewPost user={session.user} community={community}/>
             {posts.length > 0 ? <div className="w-full flex flex-col gap-6"> {posts.map(async post => (
-                    <PostCard user={session.user} isLikeSet={await isLiked(session.user.id, post.id)} post={post} key={post.id}/>
+                    <PostCard user={session.user} isLikeSet={await isLiked(session.user.id, post.id)} post={post}
+                              key={post.id}/>
                 ))} </div>
-            : <p>There are no posts yet, create first!</p>}
+                : <p>There are no posts yet, create first!</p>}
             <PaginationBar currentPage={currentPage} totalPosts={totalPosts}/>
         </>
     )

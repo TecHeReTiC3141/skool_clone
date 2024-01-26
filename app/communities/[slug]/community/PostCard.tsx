@@ -8,6 +8,7 @@ import {formatTimeAgo} from "@/app/lib/utils/formating";
 import {SessionUser} from "@/app/lib/db/user";
 import LikeButton from "@/app/communities/[slug]/community/LikeButton";
 import OpenedPost from "@/app/communities/[slug]/community/OpenedPost";
+import {useState} from "react";
 
 interface PostCardProps {
     user: NonNullable<SessionUser>,
@@ -17,9 +18,12 @@ interface PostCardProps {
 
 export default function PostCard({user, post, isLikeSet}: PostCardProps) {
 
+    const [ isOpened, setIsOpened ] = useState(false);
+
     return (
         <>
-            <div onClick={() => {
+            <div onClick={async () => {
+                await (async () => setIsOpened(true))();
                 const modal = document.getElementById(`opened_post_${post.slug}`) as HTMLDialogElement;
                 modal.showModal();
             }}
@@ -44,7 +48,7 @@ export default function PostCard({user, post, isLikeSet}: PostCardProps) {
                     </div>
                 </div>
             </div>
-            <OpenedPost user={user} isLikeSet={isLikeSet} post={post} />
+            {isOpened && <OpenedPost user={user} isLikeSet={isLikeSet} post={post}/>}
         </>
     )
 }

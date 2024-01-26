@@ -6,8 +6,10 @@ import {formatTimeAgo} from "@/app/lib/utils/formating";
 import LikeButton from "@/app/communities/[slug]/community/LikeButton";
 import {FaRegComment} from "react-icons/fa6";
 import {SessionUser} from "@/app/lib/db/user";
-import {CommunityPagePost} from "@/app/lib/db/post";
-import {useState} from "react";
+import {addComment, CommentCreateData, CommunityPagePost} from "@/app/lib/db/post";
+import {Suspense} from "react";
+import SubmitBtn from "@/app/ui/components/SubmitBtn";
+import OpenedPostComments from "@/app/communities/[slug]/community/OpenedPostComments";
 
 interface OpenedPostProps {
     user: NonNullable<SessionUser>,
@@ -17,14 +19,28 @@ interface OpenedPostProps {
 
 export default function OpenedPost({post, user, isLikeSet}: OpenedPostProps) {
 
-    const [ isEmpty, setIsEmpty ] = useState(true);
+
+    function clearCommentForm() {
+        const actions = document.querySelector("#actions")!;
+        actions.classList.remove("flex");
+        actions.classList.add("hidden");
+        const commentInput = document.querySelector("#comment") as HTMLInputElement;
+        commentInput.value = "";
+    }
 
     async function handleSubmit(formData: FormData) {
-
+        const data: CommentCreateData = {
+            answeredPostId: post.id,
+            content: formData.get("comment") as string,
+            creatorId: user.id,
+            communityId: post.communityId,
+        }
+        await addComment(data);
+        clearCommentForm();
     }
     return (
         <dialog id={`opened_post_${post.slug}`} className="modal">
-            <div className="bg-neutral rounded-lg p-8 max-w-2xl w-full absolute top-16">
+            <div className="bg-neutral rounded-lg p-8 max-w-2xl w-full absolute top-16 max-h-[90%] overflow-y-scroll overflow-x-hidden">
                 <div className="flex justify-between items-center mb-4">
 
                     <div className="flex gap-3 items-center">
@@ -60,19 +76,32 @@ export default function OpenedPost({post, user, isLikeSet}: OpenedPostProps) {
                 </div>
                 <div className="divider h-1 bg-neutral"></div>
                 <div>
-                    {/*    Comments Section*/}
+                    <Suspense fallback={
+                        <div className="flex justify-center my-3">
+                            <span className="loading loading-spinner loading-md"></span>
+                        </div>}>
+                        <OpenedPostComments user={user} post={post} />
+                    </Suspense>
                 </div>
-                <form action={handleSubmit} className="w-full">
+
+                <form action={handleSubmit} className="w-full mt-4">
                     <div className="w-full flex gap-2 items-center">
 
                         <UserAvatar user={user} width={32} height={32} />
                         <input type="text" name="comment" id="comment" className="input input-bordered w-full rounded-2xl focus:outline-none"
                             onInput={ev => {
-                                setIsEmpty(ev.currentTarget.value.length === 0);
+                                const actions = document.querySelector("#actions")!;
+                                if (ev.currentTarget.value.length === 0) {
+                                    actions.classList.remove("flex");
+                                    actions.classList.add("hidden");
+                                } else {
+                                    actions.classList.remove("hidden");
+                                    actions.classList.add("flex");
+                                }
                             }}
                                placeholder="Your comment"/>
                     </div>
-                    {!isEmpty && <div className="flex justify-end items-center w-full mt-4 gap-3">
+                    <div className="hidden justify-end items-center w-full mt-4 gap-3" id="actions">
                         <div className="form-control">
                             <label className="cursor-pointer label">
                                 <input type="checkbox" name="watch" className="checkbox checkbox-primary" />
@@ -81,12 +110,10 @@ export default function OpenedPost({post, user, isLikeSet}: OpenedPostProps) {
                         </div>
                         <button className="btn btn-ghost uppercase" onClick={ev => {
                             ev.preventDefault();
-                            setIsEmpty(true);
-                            const commentInput = document.querySelector("#comment") as HTMLInputElement;
-                            commentInput.value = "";
+                            clearCommentForm();
                         }}>Cancel</button>
-                        <button className="btn btn-primary uppercase">Comment</button>
-                    </div>}
+                        <SubmitBtn>Comment</SubmitBtn>
+                    </div>
 
                 </form>
             </div>
