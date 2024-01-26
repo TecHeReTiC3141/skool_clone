@@ -35,7 +35,7 @@ export default function PostCard({user, post, isLikeSet}: PostCardProps) {
                 <div className="flex gap-4 mt-4">
                     <div className="flex gap-2 items-center">
                         <LikeButton disabled={post.creatorId === user.id} userId={user.id} postId={post.id}
-                                    isLikeSet={isLikeSet}/>
+                                    isLikeSet={isLikeSet} className="btn btn-ghost btn-circle btn-sm text-lg flex" />
                         {post._count.userLikes}
                     </div>
                     <div className="flex gap-2 items-center">
@@ -66,18 +66,17 @@ export default function PostCard({user, post, isLikeSet}: PostCardProps) {
                     <h3 className="font-bold text-xl">{post.title}</h3>
                     <p className="py-4">{post.content}</p>
 
-                    <div className="flex gap-4">
-                        <div className="join">
-                            <button className="btn join-item">
-                                <LikeButton disabled={post.creatorId === user.id}
-                                            userId={user.id} postId={post.id}
-                                            isLikeSet={isLikeSet}>{isLikeSet ?
-                                    <span className="font-bold text-sm">Liked</span> : <span>Like</span>}
-                                </LikeButton>
-                            </button>
-                            <button className="btn join-item">Button</button>
-                            <button className="btn join-item">Button</button>
+                    <div className="flex gap-4 items-center">
+                        <div className="join bg-transparent">
+                            <LikeButton disabled={post.creatorId === user.id}
+                                        userId={user.id} postId={post.id}
+                                        className="btn join-item bg-transparent hover:bg-transparent  text-sm flex w-24"
+                                        isLikeSet={isLikeSet}>{isLikeSet ?
+                                <span className="font-bold text-sm">Liked</span> : <span>Like</span>}
+                            </LikeButton>
+                            <button className="btn join-item bg-transparent">{post._count.userLikes}</button>
                         </div>
+                        <div className="flex gap-3 items-center"><FaRegComment/> {post._count.comments} comments</div>
                     </div>
                 </div>
                 <form method="dialog" className="modal-backdrop">
