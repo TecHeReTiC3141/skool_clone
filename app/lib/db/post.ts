@@ -116,9 +116,7 @@ export async function addComment({answeredPostId, content, communityId, creatorI
     revalidatePath("/communities/[slug]/community", "page");
 }
 
-export type CommentsWithComments =  (Post & {comments: CommentsWithComments[]})[];
-
-export type PostComments = { comments: CommentsWithComments};
+export type PostComments = { id: string, comments: PostComments[] } ;
 
 function includeNestedCategories(
     maximumLevel: number,
@@ -127,19 +125,37 @@ function includeNestedCategories(
         return true;
     }
     return {
-        include: {
+        select: {
+            id: true,
             comments: includeNestedCategories(maximumLevel - 1),
         },
     };
 }
 
-export async function getPostComments(postId: string) {
+export async function getPostComments(postId: string): Promise<PostComments | null> {
     return await prisma.post.findUnique({
         where: {
             id: postId,
         },
         select: {
+            id: true,
             comments: includeNestedCategories(5),
         }
     });
+}
+
+export async function getComment(commentId: string): Promise<(PostWithCreator & PostWithLikesNumber) | null> {
+    return await prisma.post.findUnique({
+        where: {
+            id: commentId,
+        },
+        include: {
+            creator: true,
+            _count: {
+                select: {
+                    userLikes: true,
+                }
+            }
+        }
+    })
 }

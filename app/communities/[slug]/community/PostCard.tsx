@@ -7,8 +7,7 @@ import {FaRegComment} from "react-icons/fa6";
 import {formatTimeAgo} from "@/app/lib/utils/formating";
 import {SessionUser} from "@/app/lib/db/user";
 import LikeButton from "@/app/communities/[slug]/community/LikeButton";
-import OpenedPost from "@/app/communities/[slug]/community/OpenedPost";
-import {useState} from "react";
+import {usePathname, useSearchParams} from "next/navigation";
 
 interface PostCardProps {
     user: NonNullable<SessionUser>,
@@ -18,16 +17,14 @@ interface PostCardProps {
 
 export default function PostCard({user, post, isLikeSet}: PostCardProps) {
 
-    const [ isOpened, setIsOpened ] = useState(false);
+    const pathname = usePathname(), searchParams = useSearchParams();
+
+    const searchParamsWithPost=  new URLSearchParams(searchParams);
+    searchParamsWithPost.set("openedPostSlug", post.slug);
 
     return (
         <>
-            <div onClick={async () => {
-                await (async () => setIsOpened(true))();
-                const modal = document.getElementById(`opened_post_${post.slug}`) as HTMLDialogElement;
-                modal.showModal();
-            }}
-                 className="w-full rounded-lg bg-neutral p-4 cursor-pointer">
+            <Link href={`${pathname}?${searchParamsWithPost.toString()}`} className="w-full rounded-lg bg-neutral p-4 cursor-pointer">
                 <div className="flex gap-3 items-center">
                     <UserAvatar user={post.creator} width={32} height={32}/>
                     <div>
@@ -47,8 +44,7 @@ export default function PostCard({user, post, isLikeSet}: PostCardProps) {
                         <FaRegComment/> {post._count.comments}
                     </div>
                 </div>
-            </div>
-            {isOpened && <OpenedPost user={user} isLikeSet={isLikeSet} post={post}/>}
+            </Link>
         </>
     )
 }

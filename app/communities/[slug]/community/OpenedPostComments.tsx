@@ -1,39 +1,40 @@
-import {SessionUser} from "@/app/lib/db/user";
-import {CommentsWithComments, CommunityPagePost, getPostComments} from "@/app/lib/db/post";
-import type {JSX} from "react";
+import {PostComments} from "@/app/lib/db/post";
 import Comment from "@/app/communities/[slug]/community/Comment";
 
 interface OpenedPostCommentsProps {
-    user: NonNullable<SessionUser>,
-    post: CommunityPagePost,
+    comments: PostComments,
 }
 
-export default async function OpenedPostComments({user, post}: OpenedPostCommentsProps) {
+interface CommentsTreeData {
+    postId: string,
+    level: number,
+}
 
-    const allComments = await getPostComments(post.id);
-    if (!allComments) {
+
+export default async function OpenedPostComments({comments}: OpenedPostCommentsProps) {
+    console.log("in render comments");
+    if (!comments) {
         return (<div></div>);
     }
-    const {comments} = allComments;
-    console.log(comments);
-
-    const commentsElements: JSX.Element[] = [];
-
-
-    function renderCommentsTree(commentsList: CommentsWithComments, level: number = 1) {
-        if (!commentsList || commentsList.length === 0) return;
-        for (let comment of commentsList) {
-            const {comments: subComments, ...post } = comment;
-            commentsElements.push(<Comment user={user} comment={post} level={level} key={post.id} />);
-            renderCommentsTree(subComments, ++level);
+    function renderCommentsTree(subTree: PostComments, level: number = 0) {
+        const {id, comments} = subTree;
+        if (level > 0) {
+            commentsTree.push({postId: id, level});
+        }
+        if (comments.length > 0) ++level;
+        for (let comment of comments) {
+            renderCommentsTree(comment, level);
         }
     }
 
+    const commentsTree: CommentsTreeData[] = [];
     renderCommentsTree(comments);
 
     return (
         <div className="w-full flex flex-col gap-4">
-            {commentsElements}
+            {commentsTree.map(({postId, level}) =>
+                (<Comment commentId={postId} level={level} key={postId} />))
+            }
         </div>
     )
 

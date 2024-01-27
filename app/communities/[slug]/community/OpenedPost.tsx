@@ -6,19 +6,25 @@ import {formatTimeAgo} from "@/app/lib/utils/formating";
 import LikeButton from "@/app/communities/[slug]/community/LikeButton";
 import {FaRegComment} from "react-icons/fa6";
 import {SessionUser} from "@/app/lib/db/user";
-import {addComment, CommentCreateData, CommunityPagePost} from "@/app/lib/db/post";
-import {Suspense} from "react";
+import {addComment, CommentCreateData, CommunityPagePost, PostComments,} from "@/app/lib/db/post";
+import {Suspense, useEffect} from "react";
 import SubmitBtn from "@/app/ui/components/SubmitBtn";
 import OpenedPostComments from "@/app/communities/[slug]/community/OpenedPostComments";
+import {usePathname, useSearchParams} from "next/navigation";
 
 interface OpenedPostProps {
     user: NonNullable<SessionUser>,
     isLikeSet: boolean,
     post: CommunityPagePost,
+    postComments: PostComments,
 }
 
-export default function OpenedPost({post, user, isLikeSet}: OpenedPostProps) {
+export default function OpenedPost({post, user, isLikeSet, postComments}: OpenedPostProps) {
 
+    const pathname = usePathname(), searchParams = useSearchParams();
+
+    const searchParamsWithoutPost=  new URLSearchParams(searchParams);
+    searchParamsWithoutPost.delete("openedPostSlug");
 
     function clearCommentForm() {
         const actions = document.querySelector("#actions")!;
@@ -38,6 +44,14 @@ export default function OpenedPost({post, user, isLikeSet}: OpenedPostProps) {
         await addComment(data);
         clearCommentForm();
     }
+
+    useEffect(() => {
+        const dialog = document.querySelector(`#opened_post_${post.slug}`) as HTMLDialogElement;
+        dialog.showModal();
+    }, []);
+
+    console.log("in opened post");
+
     return (
         <dialog id={`opened_post_${post.slug}`} className="modal">
             <div className="bg-neutral rounded-lg p-8 max-w-2xl w-full absolute top-16 max-h-[90%] overflow-y-scroll overflow-x-hidden">
@@ -75,14 +89,13 @@ export default function OpenedPost({post, user, isLikeSet}: OpenedPostProps) {
                     <div className="flex gap-3 items-center"><FaRegComment/> {post._count.comments} comments</div>
                 </div>
                 <div className="divider h-1 bg-neutral"></div>
-                <div>
-                    <Suspense fallback={
-                        <div className="flex justify-center my-3">
-                            <span className="loading loading-spinner loading-md"></span>
-                        </div>}>
-                        <OpenedPostComments user={user} post={post} />
-                    </Suspense>
-                </div>
+
+                <Suspense fallback={
+                    <div className="flex justify-center my-3">
+                        <span className="loading loading-spinner loading-md"></span>
+                    </div>}>
+                    <OpenedPostComments comments={postComments}/>
+                </Suspense>
 
                 <form action={handleSubmit} className="w-full mt-4">
                     <div className="w-full flex gap-2 items-center">
@@ -118,7 +131,7 @@ export default function OpenedPost({post, user, isLikeSet}: OpenedPostProps) {
                 </form>
             </div>
             <form method="dialog" className="modal-backdrop">
-                <button>close</button>
+                <Link href={`${pathname}?${searchParamsWithoutPost.toString()}`}>close</Link>
             </form>
         </dialog>
     )
