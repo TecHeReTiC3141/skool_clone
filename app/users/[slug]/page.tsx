@@ -6,7 +6,8 @@ import avatarPlaceholder from "@/public/avatar-placeholder.jpg";
 import Image from "next/image";
 import CommunityMembership from "@/app/users/[slug]/CommunityMembership";
 import {CommunityAccessLevel} from "@prisma/client";
-import {getUserBySlug} from "@/app/lib/db/user";
+import {getUserBySlug, isFollower} from "@/app/lib/db/user";
+import ToggleFollowingButton from "@/app/users/[slug]/ToggleFollowingButton";
 
 
 export type ProfileCommunity = {
@@ -37,6 +38,12 @@ export default async function UserProfilePage({params: {slug}}: {
         )
     }
 
+    let isFollowing: boolean | null = null;
+
+    if (currentUser) {
+        isFollowing = await isFollower(currentUser.id, user.id);
+    }
+
     let joinDate = user.createdAt.toDateString();
     joinDate = joinDate.substring(joinDate.indexOf(" ") + 1);
     return (
@@ -65,7 +72,7 @@ export default async function UserProfilePage({params: {slug}}: {
                 <div className="card-body">
                     <div className="avatar">
                         <div className="w-full rounded-full border-4 border-primary">
-                            <Image src={user?.image || avatarPlaceholder.src} alt="Shoes"
+                            <Image src={user.image || avatarPlaceholder.src} alt="Shoes"
                                    width={280} height={280}/>
                         </div>
                     </div>
@@ -87,12 +94,12 @@ export default async function UserProfilePage({params: {slug}}: {
                         <div className="divider divider-horizontal w-1 mx-1"></div>
 
                         <button className="bg-transparent flex flex-col items-center">
-                            <p className="text-lg">{user.followersNumber}</p>
+                            <p className="text-lg">{user._count.followedBy}</p>
                             <span className="text-sm">followers</span>
                         </button>
                         <div className="divider divider-horizontal w-1 mx-1"></div>
                         <button className="bg-transparent flex flex-col items-center">
-                            <p className="text-lg">{user.followingNumber}</p>
+                            <p className="text-lg">{user._count.following}</p>
                             <span className="text-sm">following</span>
                         </button>
                     </div>
@@ -101,8 +108,8 @@ export default async function UserProfilePage({params: {slug}}: {
                     {currentUser?.id === user.id ?
                         <Link href="/settings" className="btn btn-primary btn-wide">Edit profile</Link> :
                         <div className="w-full">
-                            <button className="btn btn-primary btn-block uppercase mb-3">Follow</button>
-                            <button className="btn btn-primary btn-block uppercase">Chat <FaRegComment /></button>
+                            <ToggleFollowingButton isFollowing={isFollowing} profileUserId={user.id} currentUserId={currentUser?.id} />
+                            <button className="btn btn-primary btn-block uppercase">Chat <FaRegComment/></button>
                         </div>
                     }
                 </div>
