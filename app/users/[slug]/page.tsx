@@ -6,8 +6,9 @@ import avatarPlaceholder from "@/public/avatar-placeholder.jpg";
 import Image from "next/image";
 import CommunityMembership from "@/app/users/[slug]/CommunityMembership";
 import {CommunityAccessLevel} from "@prisma/client";
-import {getUserBySlug, isFollower} from "@/app/lib/db/user";
+import {getUserBySlug, getUserFollowers, getUserFollowing, isFollower} from "@/app/lib/db/user";
 import ToggleFollowingButton from "@/app/users/[slug]/ToggleFollowingButton";
+import UserList from "@/app/users/[slug]/UserList";
 
 
 export type ProfileCommunity = {
@@ -21,9 +22,12 @@ export type ProfileCommunity = {
 }
 
 
-export default async function UserProfilePage({params: {slug}}: {
+export default async function UserProfilePage({params: {slug}, searchParams: {t}}: {
     params: {
         slug: string
+    },
+    searchParams: {
+        t?: "following" | "followedBy",
     }
 }) {
     const session = await getServerSession(authOptions);
@@ -46,29 +50,36 @@ export default async function UserProfilePage({params: {slug}}: {
 
     let joinDate = user.createdAt.toDateString();
     joinDate = joinDate.substring(joinDate.indexOf(" ") + 1);
+
     return (
         <div className="max-w-6xl flex justify-between w-full gap-6 mt-12 m-auto">
-            <div className="flex flex-col gap-6">
-                <div>
-                    <h4 className="text-lg mb-8">Activity</h4>
-                    <div className="skeleton w-[48rem] h-48"></div>
-                </div>
+            {t && (t === "followedBy" || t === "following") ? <UserList users={await (t === "following" ? getUserFollowing : getUserFollowers)(user.id)}
+                                                                 title={t === "following" ?
+                                                                     "Following" : "Followers"}
+                                                                 fallbackText={t === "following" ?
+                                                                     `${user.name} do not follow any users` :
+                                                                     `${user.name} doesn't have any followers`} /> :
+                <div className="flex flex-col gap-6">
+                    <div>
+                        <h4 className="text-lg mb-8">Activity</h4>
+                        <div className="skeleton w-[48rem] h-48"></div>
+                    </div>
 
-                <div>
-                    <h4 className="text-lg mb-4">Memberships</h4>
-                    {user.communities.length > 0 ?
-                        <div className="flex flex-col gap-4">
-                            {user.communities.map(({community}) =>
-                                (<CommunityMembership key={community.slug} community={community}/>))}
-                        </div>
-                        : <p>You are not member of any communities, join some or create your own</p>}
-                </div>
+                    <div>
+                        <h4 className="text-lg mb-4">Memberships</h4>
+                        {user.communities.length > 0 ?
+                            <div className="flex flex-col gap-4">
+                                {user.communities.map(({community}) =>
+                                    (<CommunityMembership key={community.slug} community={community}/>))}
+                            </div>
+                            : <p>You are not member of any communities, join some or create your own</p>}
+                    </div>
 
-                <div>
-                    <h4 className="text-lg">Contributions</h4>
-                </div>
-            </div>
-            <div className="card card-compact  w-72 bg-neutral shadow-xl">
+                    <div>
+                        <h4 className="text-lg">Contributions</h4>
+                    </div>
+                </div>}
+            <div className="card card-compact w-72 bg-neutral shadow-xl">
                 <div className="card-body">
                     <div className="avatar">
                         <div className="w-full rounded-full border-4 border-primary">
@@ -93,22 +104,23 @@ export default async function UserProfilePage({params: {slug}}: {
 
                         <div className="divider divider-horizontal w-1 mx-1"></div>
 
-                        <button className="bg-transparent flex flex-col items-center">
+                        <Link href="?t=followedBy" className="bg-transparent flex flex-col items-center">
                             <p className="text-lg">{user._count.followedBy}</p>
                             <span className="text-sm">followers</span>
-                        </button>
+                        </Link>
                         <div className="divider divider-horizontal w-1 mx-1"></div>
-                        <button className="bg-transparent flex flex-col items-center">
+                        <Link href="?t=following" className="bg-transparent flex flex-col items-center">
                             <p className="text-lg">{user._count.following}</p>
                             <span className="text-sm">following</span>
-                        </button>
+                        </Link>
                     </div>
                     <div className="divider h-1 my-0"></div>
 
                     {currentUser?.id === user.id ?
                         <Link href="/settings" className="btn btn-primary btn-wide">Edit profile</Link> :
                         <div className="w-full">
-                            <ToggleFollowingButton isFollowing={isFollowing} profileUserId={user.id} currentUserId={currentUser?.id} />
+                            <ToggleFollowingButton isFollowing={isFollowing} profileUserId={user.id}
+                                                   currentUserId={currentUser?.id}/>
                             <button className="btn btn-primary btn-block uppercase">Chat <FaRegComment/></button>
                         </div>
                     }
