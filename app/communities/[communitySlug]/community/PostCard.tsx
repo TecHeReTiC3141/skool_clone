@@ -24,7 +24,7 @@ export default function PostCard({user, post, isLikeSet}: PostCardProps) {
 
     return (
         <>
-            <Link href={`${pathname}?${searchParamsWithPost.toString()}`} className="w-full rounded-lg bg-neutral p-4 cursor-pointer">
+            <Link href={`${post.slug}`} className="w-full rounded-lg bg-neutral p-4 cursor-pointer">
                 <div className="flex gap-3 items-center">
                     <UserAvatar user={post.creator} width={32} height={32}/>
                     <div>

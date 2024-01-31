@@ -41,29 +41,30 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(auto()) @map("_id") @db.ObjectId
-    name          String?
-    email         String?   @unique
-    slug          String    @unique
-    description   String?
-    createdAt     DateTime  @default(now())
-    password      String?
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    followedBy    User[]    @relation("Followers", fields: [followedByIds], references: [id])
-    followedByIds String[]  @db.ObjectId
-    following     User[]    @relation("Followers", fields: [followingIds], references: [id])
-    followingIds  String[]  @db.ObjectId
-
+    id                 String                @id @default(auto()) @map("_id") @db.ObjectId
+    name               String?
+    email              String?               @unique
+    slug               String                @unique
+    description        String?
+    createdAt          DateTime              @default(now())
+    password           String?
+    emailVerified      DateTime?
+    image              String?
+    accounts           Account[]
+    sessions           Session[]
+    followedBy         User[]                @relation("Followers", fields: [followedByIds], references: [id])
+    followedByIds      String[]              @db.ObjectId
+    following          User[]                @relation("Followers", fields: [followingIds], references: [id])
+    followingIds       String[]              @db.ObjectId
     createdCommunities Community[]           @relation("CommunityCreator")
     communities        CommunityMembership[]
     postsWritten       Post[]                @relation("PostsWritten")
-    postsLiked         Post[]                @relation("Likes", fields: [postLikedIds], references: [id])
+    postsLiked         Post[]                @relation("PostLikes", fields: [postLikedIds], references: [id])
     postLikedIds       String[]              @db.ObjectId
+    commentsLiked      Comment[]             @relation("CommentLikes", fields: [commentsLikedIds], references: [id])
+    commentsLikedIds   String[]              @db.ObjectId
+    comments           Comment[]             @relation("CommentWritten")
 
-    // Implement MANY-TO-MANy relations between follower
     @@map("users")
 }
 
@@ -123,20 +124,36 @@ enum CommunityUserRole {
 }
 
 model Post {
-    id             String    @id @default(auto()) @map("_id") @db.ObjectId
-    title          String?
-    content        String
-    slug           String    @unique
-    creator        User      @relation("PostsWritten", fields: [creatorId], references: [id])
-    creatorId      String    @db.ObjectId
-    community      Community @relation(fields: [communityId], references: [id])
-    communityId    String    @db.ObjectId
-    userLikes      User[]    @relation("Likes", fields: [userLikesIds], references: [id])
-    userLikesIds   String[]  @db.ObjectId
-    answeredPost   Post?     @relation("PostComments", fields: [answeredPostId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-    answeredPostId String?   @db.ObjectId
-    comments       Post[]    @relation("PostComments")
-    createdAt      DateTime  @default(now())
+    id           String    @id @default(auto()) @map("_id") @db.ObjectId
+    title        String?
+    content      String
+    createdAt    DateTime  @default(now())
+    slug         String    @unique
+    creator      User      @relation("PostsWritten", fields: [creatorId], references: [id])
+    creatorId    String    @db.ObjectId
+    community    Community @relation(fields: [communityId], references: [id])
+    communityId  String    @db.ObjectId
+    userLikes    User[]    @relation("PostLikes", fields: [userLikesIds], references: [id])
+    userLikesIds String[]  @db.ObjectId
+    comments     Comment[] @relation("PostComments")
 
     @@map("posts")
+}
+
+model Comment {
+    id           String    @id @default(auto()) @map("_id") @db.ObjectId
+    message      String
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime  @updatedAt
+    user         User      @relation("CommentWritten", fields: [userId], references: [id], onDelete: Cascade)
+    userId       String    @db.ObjectId
+    post         Post      @relation("PostComments", fields: [postId], references: [id], onDelete: Cascade)
+    postId       String    @db.ObjectId
+    parent       Comment?  @relation("ParentChild", fields: [parentId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+    parentId     String?   @db.ObjectId
+    children     Comment[] @relation("ParentChild")
+    userLikes    User[]    @relation("CommentLikes", fields: [userLikesIds], references: [id])
+    userLikesIds String[]  @db.ObjectId
+
+    @@map("comments")
 }
