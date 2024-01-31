@@ -46,7 +46,7 @@ export default async function CommunityMembersPage({params: {slug}, searchParams
 
     return (
         <div>
-            <MemberFilters memberCount={memberCounts.MEMBER} adminsCount={memberCounts.ADMIN}/>
+            <MemberFilters memberCount={memberCounts.MEMBER} adminsCount={memberCounts.ADMIN} section={t}/>
             <CommunityMemberList users={users?.members || []}/>
         </div>
     )
