@@ -1,11 +1,17 @@
-import Link from "next/link";
 import {getServerSession} from "next-auth";
 import UserMenuBtn from "@/app/ui/components/auth/UserMenuBtn";
 import NotificationsBtn from "@/app/ui/components/NotificationsBtn";
 import {authOptions} from "@/app/lib/config/authOptions";
-import CommunityNavBar from "@/app/communities/[slug]/CommunityNavBar";
+import CommunityNavBar from "@/app/communities/[communitySlug]/CommunityNavBar";
+import HeaderSwitcher from "@/app/ui/components/HeaderSwitcher";
 
-export default async function Header() {
+interface HeaderProps {
+    params: {
+        communitySlug?: string
+    }
+}
+
+export default async function Header({params: {communitySlug}}: HeaderProps) {
     const session = await getServerSession(authOptions);
 
     return (
@@ -14,11 +20,7 @@ export default async function Header() {
 
                 <header className="navbar w-full gap-3">
                     <div className="flex-1">
-                        <Link className="btn btn-ghost text-2xl text-accent" href="/">
-                            Skool
-                        </Link>
-                        {/* TODO: implement section with link to main/create community pages and
-                                also to also communities the user is member of */}
+                        <HeaderSwitcher user={session?.user} />
                     </div>
                     <NotificationsBtn session={session}/>
                     <UserMenuBtn session={session}/>

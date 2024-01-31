@@ -2,16 +2,16 @@ import {checkIfUserInCommunity, getCommunityFromSlug} from "@/app/lib/db/communi
 import {redirect} from "next/navigation";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/lib/config/authOptions";
-import AddNewPost from "@/app/communities/[slug]/community/AddNewPost";
+import AddNewPost from "@/app/communities/[communitySlug]/community/AddNewPost";
 import {CommunityPagePost, getCommunityPosts, getPostComments, isLiked, PostComments} from "@/app/lib/db/post";
-import PostCard from "@/app/communities/[slug]/community/PostCard";
-import PaginationBar from "@/app/communities/[slug]/community/PaginationBar";
+import PostCard from "@/app/communities/[communitySlug]/community/PostCard";
+import PaginationBar from "@/app/communities/[communitySlug]/community/PaginationBar";
 import prisma from "@/app/lib/db/prisma";
-import OpenedPost from "@/app/communities/[slug]/community/OpenedPost";
+import OpenedPost from "@/app/communities/[communitySlug]/community/OpenedPost";
 
 interface CommunityAboutPageProps {
     params: {
-        slug: string,
+        communitySlug: string,
     },
     searchParams: {
         page: string,
@@ -19,11 +19,11 @@ interface CommunityAboutPageProps {
     }
 }
 
-export default async function CommunityAboutPage({params: {slug}, searchParams: {page = "1", openedPostSlug}}: CommunityAboutPageProps) {
+export default async function CommunityAboutPage({params: {communitySlug}, searchParams: {page = "1", openedPostSlug}}: CommunityAboutPageProps) {
 
     const currentPage = +page;
-    console.log("in about page", slug, currentPage);
-    const community = await getCommunityFromSlug(slug);
+    console.log("in about page", communitySlug, currentPage);
+    const community = await getCommunityFromSlug(communitySlug);
 
     if (!community) {
         return redirect("/404");

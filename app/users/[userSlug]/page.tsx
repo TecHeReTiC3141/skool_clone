@@ -4,12 +4,12 @@ import {FaRegCalendar, FaRegComment} from "react-icons/fa6";
 import Link from "next/link";
 import avatarPlaceholder from "@/public/avatar-placeholder.jpg";
 import Image from "next/image";
-import CommunityMembership from "@/app/users/[slug]/CommunityMembership";
+import CommunityMembership from "@/app/users/[userSlug]/CommunityMembership";
 import {CommunityAccessLevel} from "@prisma/client";
 import {getUserBySlug, isFollower} from "@/app/lib/db/user";
-import ToggleFollowingButton from "@/app/users/[slug]/ToggleFollowingButton";
-import UserList from "@/app/users/[slug]/UserList";
-import {getUserFollowers, getUserFollowing} from "@/app/users/[slug]/actions";
+import ToggleFollowingButton from "@/app/users/[userSlug]/ToggleFollowingButton";
+import UserList from "@/app/users/[userSlug]/UserList";
+import {getUserFollowers, getUserFollowing} from "@/app/users/[userSlug]/actions";
 
 
 export type ProfileCommunity = {
@@ -23,9 +23,9 @@ export type ProfileCommunity = {
 }
 
 
-export default async function UserProfilePage({params: {slug}, searchParams: {t}}: {
+export default async function UserProfilePage({params: {userSlug}, searchParams: {t}}: {
     params: {
-        slug: string
+        userSlug: string
     },
     searchParams: {
         t?: "following" | "followedBy",
@@ -35,7 +35,7 @@ export default async function UserProfilePage({params: {slug}, searchParams: {t}
 
     const currentUser = session?.user;
 
-    const user = await getUserBySlug(slug);
+    const user = await getUserBySlug(userSlug);
 
     if (!user) {
         return (

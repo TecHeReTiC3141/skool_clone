@@ -1,5 +1,5 @@
-import UserListCard from "@/app/users/[slug]/UserListCard";
-import {UserOfUserList} from "@/app/users/[slug]/actions";
+import UserListCard from "@/app/users/[userSlug]/UserListCard";
+import {UserOfUserList} from "@/app/users/[userSlug]/actions";
 
 interface UserListProps {
     users: UserOfUserList[],

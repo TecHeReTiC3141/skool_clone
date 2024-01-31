@@ -3,7 +3,7 @@
 import {useState} from "react";
 import {SessionUser} from "@/app/lib/db/user";
 import {Community} from "@prisma/client";
-import UserAvatar from "@/app/users/[slug]/UserAvatar";
+import UserAvatar from "@/app/users/[userSlug]/UserAvatar";
 import {createPost, PostCreateData} from "@/app/lib/db/post";
 import SubmitBtn from "@/app/ui/components/SubmitBtn";
 

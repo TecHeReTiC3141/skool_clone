@@ -1,6 +1,6 @@
 "use server"
 
-import {UserOfUserList} from "@/app/users/[slug]/actions";
+import {UserOfUserList} from "@/app/users/[userSlug]/actions";
 import prisma from "@/app/lib/db/prisma";
 import {CommunityUserRole} from "@prisma/client";
 

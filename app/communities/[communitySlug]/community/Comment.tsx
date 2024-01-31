@@ -1,4 +1,4 @@
-import UserAvatar from "@/app/users/[slug]/UserAvatar";
+import UserAvatar from "@/app/users/[userSlug]/UserAvatar";
 import Link from "next/link";
 import {getComment} from "@/app/lib/db/post";
 

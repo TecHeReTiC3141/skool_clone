@@ -120,7 +120,7 @@ export async function followUser(followerId: string, followingId: string): Promi
             }
         }
     });
-    revalidatePath("/users/[slug]");
+    revalidatePath("/users/[userSlug]");
 }
 
 export async function unfollowUser(followerId: string, followingId: string): Promise<void> {
@@ -134,5 +134,5 @@ export async function unfollowUser(followerId: string, followingId: string): Pro
             }
         }
     });
-    revalidatePath("/users/[slug]");
+    revalidatePath("/users/[userSlug]");
 }

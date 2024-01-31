@@ -23,7 +23,7 @@ export async function createPost({title, content, creatorId, communityId}: PostC
             communityId,
         }
     });
-    revalidatePath("/communities/[slug]/community", "page");
+    revalidatePath("/communities/[communitySlug]/community", "page");
 }
 
 export type PostWithCreator = Post & { creator: User };
@@ -79,7 +79,7 @@ export async function setLike(userId: string, postId: string) {
             userLikes: {connect: {id: userId}},
         }
     });
-    revalidatePath("/communities/[slug]/community", "page");
+    revalidatePath("/communities/[communitySlug]/community", "page");
 }
 
 export async function unsetLike(userId: string, postId: string) {
@@ -91,7 +91,7 @@ export async function unsetLike(userId: string, postId: string) {
             userLikes: {disconnect: {id: userId}},
         }
     });
-    revalidatePath("/communities/[slug]/community", "page");
+    revalidatePath("/communities/[communitySlug]/community", "page");
 }
 
 // COMMENTS
@@ -113,7 +113,7 @@ export async function addComment({answeredPostId, content, communityId, creatorI
             answeredPost: { connect: { id: answeredPostId}}
         }
     });
-    revalidatePath("/communities/[slug]/community", "page");
+    revalidatePath("/communities/[communitySlug]/community", "page");
 }
 
 export type PostComments = { id: string, comments: PostComments[] } ;

@@ -4,7 +4,7 @@ import {CommunityAccessLevel, CommunityUserRole} from "@prisma/client";
 import {checkIfUserInCommunity, CommunityWithMemberCount, CommunityWithMembers} from "@/app/lib/db/community";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/lib/config/authOptions";
-import CommunityJoinButton from "@/app/communities/[slug]/CommunityJoinButton";
+import CommunityJoinButton from "@/app/communities/[communitySlug]/CommunityJoinButton";
 import Link from "next/link";
 
 interface CommunityInfoCardProps {

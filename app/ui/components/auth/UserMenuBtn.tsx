@@ -3,7 +3,7 @@
 import {Session} from "next-auth";
 import Link from "next/link";
 import LogOutModal from "@/app/ui/components/auth/LogOutModal";
-import UserAvatar from "@/app/users/[slug]/UserAvatar";
+import UserAvatar from "@/app/users/[userSlug]/UserAvatar";
 
 interface UserMenuBtnProps {
     session: Session | null,

@@ -6,18 +6,18 @@ import {FaGlobe, FaLock} from "react-icons/fa6";
 import {FiUsers} from "react-icons/fi";
 import {formatMemberCount, formatPrice} from "@/app/lib/utils/formating";
 import Link from "next/link";
-import Carousel from "@/app/communities/[slug]/about/Carousel";
+import Carousel from "@/app/communities/[communitySlug]/about/Carousel";
 
 
 interface CommunityAboutPageProps {
     params: {
-        slug: string,
+        communitySlug: string,
     },
 }
 
-export default async function CommunityAboutPage({params: {slug}}: CommunityAboutPageProps) {
-    console.log("in about page", slug);
-    const community = await getCommunityFromSlug(slug);
+export default async function CommunityAboutPage({params: {communitySlug}}: CommunityAboutPageProps) {
+    console.log("in about page", communitySlug);
+    const community = await getCommunityFromSlug(communitySlug);
 
     if (!community) {
         return redirect("/404");

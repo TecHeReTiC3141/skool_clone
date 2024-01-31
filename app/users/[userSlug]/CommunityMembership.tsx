@@ -1,4 +1,4 @@
-import {ProfileCommunity} from "@/app/users/[slug]/page";
+import {ProfileCommunity} from "@/app/users/[userSlug]/page";
 import Image from "next/image";
 import Link from "next/link";
 import {formatMemberCount} from "@/app/lib/utils/formating";

@@ -1,5 +1,5 @@
 import {PostComments} from "@/app/lib/db/post";
-import Comment from "@/app/communities/[slug]/community/Comment";
+import Comment from "@/app/communities/[communitySlug]/community/Comment";
 
 interface OpenedPostCommentsProps {
     comments: PostComments,

@@ -1,15 +1,15 @@
 "use client"
 
-import UserAvatar from "@/app/users/[slug]/UserAvatar";
+import UserAvatar from "@/app/users/[userSlug]/UserAvatar";
 import Link from "next/link";
 import {formatTimeAgo} from "@/app/lib/utils/formating";
-import LikeButton from "@/app/communities/[slug]/community/LikeButton";
+import LikeButton from "@/app/communities/[communitySlug]/community/LikeButton";
 import {FaRegComment} from "react-icons/fa6";
 import {SessionUser} from "@/app/lib/db/user";
 import {addComment, CommentCreateData, CommunityPagePost, PostComments,} from "@/app/lib/db/post";
 import {Suspense, useEffect} from "react";
 import SubmitBtn from "@/app/ui/components/SubmitBtn";
-import OpenedPostComments from "@/app/communities/[slug]/community/OpenedPostComments";
+import OpenedPostComments from "@/app/communities/[communitySlug]/community/OpenedPostComments";
 import {usePathname, useSearchParams} from "next/navigation";
 
 interface OpenedPostProps {

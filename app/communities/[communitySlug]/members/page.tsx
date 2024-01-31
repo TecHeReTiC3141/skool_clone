@@ -2,19 +2,19 @@ import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/lib/config/authOptions";
 import {checkIfUserInCommunity, getCommunityFromSlug} from "@/app/lib/db/community";
 import {redirect} from "next/navigation";
-import MemberFilters from "@/app/communities/[slug]/members/MemberFilters";
-import CommunityMemberList from "@/app/communities/[slug]/members/CommunityMemberList";
+import MemberFilters from "@/app/communities/[communitySlug]/members/MemberFilters";
+import CommunityMemberList from "@/app/communities/[communitySlug]/members/CommunityMemberList";
 import {
     CommunityMembersListData,
     getAllCommunityMembers,
     getCommunityAdmins,
     getCommunityMemberCounts,
     getCommunityMembers
-} from "@/app/communities/[slug]/members/actions";
+} from "@/app/communities/[communitySlug]/members/actions";
 
 interface CommunityMembersPageProps {
     params: {
-        slug: string,
+        communitySlug: string,
     },
     searchParams: {
         t?: string,
@@ -22,10 +22,10 @@ interface CommunityMembersPageProps {
 }
 
 
-export default async function CommunityMembersPage({params: {slug}, searchParams: {t = "member"}}: CommunityMembersPageProps) {
+export default async function CommunityMembersPage({params: {communitySlug}, searchParams: {t = "member"}}: CommunityMembersPageProps) {
     const session = await getServerSession(authOptions);
 
-    const community = await getCommunityFromSlug(slug);
+    const community = await getCommunityFromSlug(communitySlug);
 
     if (!community) {
         return redirect("/404");
@@ -36,7 +36,7 @@ export default async function CommunityMembersPage({params: {slug}, searchParams
     }
 
     let users: CommunityMembersListData | null = await (t === "member" ? getCommunityMembers :
-        t === "admin" ? getCommunityAdmins : getAllCommunityMembers)(slug);
+        t === "admin" ? getCommunityAdmins : getAllCommunityMembers)(communitySlug);
 
     console.log("memberss", users);
 
