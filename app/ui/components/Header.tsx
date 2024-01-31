@@ -4,15 +4,23 @@ import NotificationsBtn from "@/app/ui/components/NotificationsBtn";
 import {authOptions} from "@/app/lib/config/authOptions";
 import CommunityNavBar from "@/app/communities/[communitySlug]/CommunityNavBar";
 import HeaderSwitcher from "@/app/ui/components/HeaderSwitcher";
+import {getUserBySlug} from "@/app/lib/db/user";
+import {CommunityMembershipData} from "@/app/lib/db/community";
 
 interface HeaderProps {
-    params: {
-        communitySlug?: string
-    }
+    communitySlug?: string
 }
 
-export default async function Header({params: {communitySlug}}: HeaderProps) {
+export default async function Header({communitySlug}: HeaderProps) {
     const session = await getServerSession(authOptions);
+
+    const user = session?.user;
+
+    let userCommunities: {community: CommunityMembershipData}[] | null = null;
+
+    if (user) {
+        userCommunities = (await getUserBySlug(user.slug))?.communities;
+    }
 
     return (
         <div className="w-full bg-base-300 flex justify-center mb-4 border-b border-neutral shadow-lg shadow-base-300">
@@ -20,7 +28,7 @@ export default async function Header({params: {communitySlug}}: HeaderProps) {
 
                 <header className="navbar w-full gap-3">
                     <div className="flex-1">
-                        <HeaderSwitcher user={session?.user} />
+                        <HeaderSwitcher user={session?.user} communities={userCommunities}/>
                     </div>
                     <NotificationsBtn session={session}/>
                     <UserMenuBtn session={session}/>
