@@ -5,6 +5,7 @@ import {checkIfUserInCommunity, CommunityWithMemberCount, CommunityWithMembers} 
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/lib/config/authOptions";
 import CommunityJoinButton from "@/app/communities/[slug]/CommunityJoinButton";
+import Link from "next/link";
 
 interface CommunityInfoCardProps {
     community: CommunityWithMemberCount & CommunityWithMembers,
@@ -32,10 +33,10 @@ export default async function CommunityInfoCard({community}: CommunityInfoCardPr
 
                 <div className="divider h-1 my-0"></div>
                 <div className="flex justify-between w-full px-4">
-                    <button className="bg-transparent flex flex-col items-center">
+                    <Link href="members" className="bg-transparent flex flex-col items-center">
                         <p className="text-lg">{community._count.members}</p>
                         <span className="text-sm">members</span>
-                    </button>
+                    </Link>
 
                     <div className="divider divider-horizontal w-1 mx-1"></div>
 

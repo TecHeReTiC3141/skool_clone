@@ -6,9 +6,10 @@ import avatarPlaceholder from "@/public/avatar-placeholder.jpg";
 import Image from "next/image";
 import CommunityMembership from "@/app/users/[slug]/CommunityMembership";
 import {CommunityAccessLevel} from "@prisma/client";
-import {getUserBySlug, getUserFollowers, getUserFollowing, isFollower} from "@/app/lib/db/user";
+import {getUserBySlug, isFollower} from "@/app/lib/db/user";
 import ToggleFollowingButton from "@/app/users/[slug]/ToggleFollowingButton";
 import UserList from "@/app/users/[slug]/UserList";
+import {getUserFollowers, getUserFollowing} from "@/app/users/[slug]/actions";
 
 
 export type ProfileCommunity = {

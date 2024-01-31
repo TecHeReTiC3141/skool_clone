@@ -17,7 +17,7 @@ export default function PaginationBar({currentPage, totalPosts}: PaginationProps
     const pathname = usePathname(), searchParams = useSearchParams();
     const pagesBtns: JSX.Element[] = [];
 
-    if (totalPages === 1) return <></>
+    if (totalPages <= 1) return <></>
 
     const firstPageSearchParams = new URLSearchParams(searchParams);
     firstPageSearchParams.set("page", "1");
