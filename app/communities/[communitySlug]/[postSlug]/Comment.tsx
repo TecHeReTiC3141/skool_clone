@@ -1,6 +1,6 @@
 import UserAvatar from "@/app/users/[userSlug]/UserAvatar";
 import Link from "next/link";
-import {addComment, isLiked, PostComment, setLike, unsetLike} from "@/app/lib/db/comment";
+import {addComment, PostComment, setLike, unsetLike} from "@/app/lib/db/comment";
 import {formatTimeAgo} from "@/app/lib/utils/formating";
 import LikeButton from "@/app/communities/[communitySlug]/community/LikeButton";
 import CommentsList from "@/app/communities/[communitySlug]/[postSlug]/CommentsList";
@@ -11,9 +11,10 @@ interface CommentProps {
     comment: PostComment,
     getReplies: (id: string) => PostComment[],
     user: NonNullable<SessionUser>,
+    isLikeSet: boolean,
 }
 
-export default async function Comment({user, comment, getReplies}: CommentProps) {
+export default function Comment({user, isLikeSet, comment, getReplies}: CommentProps) {
 
     return (
 
@@ -28,15 +29,15 @@ export default async function Comment({user, comment, getReplies}: CommentProps)
                     </div>
                     <p>{comment.content}</p>
                 </div>
-                <div className="flex gap-2 items-center mt-1">
-                    <LikeButton userId={user.id} postId={comment.id} isLikeSet={await isLiked(user.id, comment.id)}
+                <div className="flex gap-2 items-center mt-1 flex-wrap">
+                    <LikeButton userId={user.id} postId={comment.id} isLikeSet={isLikeSet}
                                 disabled={user.id === comment.creator.id}
                                 unsetLike={unsetLike} setLike={setLike}
                                 className="btn btn-ghost btn-circle btn-sm text-lg flex"/>
                     {comment._count.userLikes}
-                    <button className="btn btn-ghost btn-sm">Reply</button>
+                    <AddCommentForm user={user} parentId={comment.id} postId={comment.postId} addComment={addComment}
+                                    initialValue={comment.creator.name || ""}/>
                 </div>
-                <AddCommentForm user={user} parentId={comment.id} postId={comment.postId} addComment={addComment}/>
                 <CommentsList comments={getReplies(comment.id)} getReplies={getReplies}/>
             </div>
         </div>
