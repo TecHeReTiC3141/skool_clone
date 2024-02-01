@@ -1,3 +1,5 @@
+"use client"
+
 import {useFormStatus} from "react-dom";
 import React, {ComponentProps} from "react";
 import clsx from "clsx";

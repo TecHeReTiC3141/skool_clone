@@ -4,16 +4,58 @@ import {formatTimeAgo} from "@/app/lib/utils/formating";
 import LikeButton from "@/app/communities/[communitySlug]/community/LikeButton";
 import {FaRegComment} from "react-icons/fa6";
 import {Suspense} from "react";
-import OpenedPostComments from "@/app/communities/[communitySlug]/community/OpenedPostComments";
-import SubmitBtn from "@/app/ui/components/SubmitBtn";
+import CommentsList from "@/app/communities/[communitySlug]/[postSlug]/CommentsList";
+import {SessionUser} from "@/app/lib/db/user";
+import {CommunityPagePost, isLiked} from "@/app/lib/db/post";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/app/lib/config/authOptions";
+import {redirect} from "next/navigation";
+import {addComment, getPostComments, PostComment} from "@/app/lib/db/comment";
+import AddCommentForm from "@/app/communities/[communitySlug]/[postSlug]/AddCommentForm";
 
-export default function OpenedPost() {
 
+interface OpenedPostProps {
+    post: CommunityPagePost,
+}
+
+export default async function OpenedPost({post}: OpenedPostProps) {
+    const session = await getServerSession(authOptions)
+
+    if (!session) {
+        return redirect("/login");
+    }
+
+    const user: NonNullable<SessionUser> = session.user;
+
+    const isLikeSet = await isLiked(user.id, post.id);
+
+    const postComments = await getPostComments(post.id);
+
+    function getCommentsByParentId(comments: PostComment[]): {
+        [ key: string ]: PostComment[],
+    } {
+        const group: {
+            [ key: string ]: PostComment[],
+        } = {"topLevel": []};
+
+        comments.forEach(comment => {
+            group[ comment.parentId || "topLevel" ] ||= [];
+            group[ comment.parentId || "topLevel" ].push(comment);
+        })
+
+        return group;
+    }
+
+    const commentByParentId = getCommentsByParentId(postComments.comments);
+
+    function getReplies(commentId: string): PostComment[] {
+        return commentByParentId[commentId];
+    }
 
     return (
 
         <div
-            className="bg-neutral rounded-lg p-8 max-w-2xl w-full absolute top-16 max-h-[90%] overflow-y-scroll overflow-x-hidden">
+            className="bg-neutral rounded-lg p-8 w-full">
             <div className="flex justify-between items-center mb-4">
 
                 <div className="flex gap-3 items-center">
@@ -49,47 +91,15 @@ export default function OpenedPost() {
             </div>
             <div className="divider h-1 bg-neutral"></div>
 
-            <Suspense fallback={
+            {postComments && <Suspense fallback={
                 <div className="flex justify-center my-3">
                     <span className="loading loading-spinner loading-md"></span>
                 </div>}>
-                <OpenedPostComments comments={postComments}/>
-            </Suspense>
+                <CommentsList comments={getReplies("topLevel")} getReplies={getReplies}/>
+            </Suspense>}
 
-            <form action={handleSubmit} className="w-full mt-4">
-                <div className="w-full flex gap-2 items-center">
+            <AddCommentForm user={user} post={post} addComment={addComment} />
 
-                    <UserAvatar user={user} width={32} height={32}/>
-                    <input type="text" name="comment" id="comment"
-                           className="input input-bordered w-full rounded-2xl focus:outline-none"
-                           onInput={ev => {
-                               const actions = document.querySelector("#actions")!;
-                               if (ev.currentTarget.value.length === 0) {
-                                   actions.classList.remove("flex");
-                                   actions.classList.add("hidden");
-                               } else {
-                                   actions.classList.remove("hidden");
-                                   actions.classList.add("flex");
-                               }
-                           }}
-                           placeholder="Your comment"/>
-                </div>
-                <div className="hidden justify-end items-center w-full mt-4 gap-3" id="actions">
-                    <div className="form-control">
-                        <label className="cursor-pointer label">
-                            <input type="checkbox" name="watch" className="checkbox checkbox-primary"/>
-                            <span className="label-text ml-3">Watch</span>
-                        </label>
-                    </div>
-                    <button className="btn btn-ghost uppercase" onClick={ev => {
-                        ev.preventDefault();
-                        clearCommentForm();
-                    }}>Cancel
-                    </button>
-                    <SubmitBtn>Comment</SubmitBtn>
-                </div>
-
-            </form>
         </div>
     )
 }

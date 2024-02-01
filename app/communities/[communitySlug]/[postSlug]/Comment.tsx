@@ -1,17 +1,13 @@
 import UserAvatar from "@/app/users/[userSlug]/UserAvatar";
 import Link from "next/link";
-import {getComment} from "@/app/lib/db/post";
+import {PostComment} from "@/app/lib/db/comment";
 
 interface CommentProps {
-    commentId: string,
-    level: number,
+    comment: PostComment,
+    getReplies: (id: string) => PostComment[],
 }
 
-export default async function Comment({commentId, level}: CommentProps) {
-    const comment = await getComment(commentId);
-    if (!comment) {
-        return <div></div>;
-    }
+export default async function Comment({comment, getReplies}: CommentProps) {
 
     return (
         <div className="w-full flex gap-2">

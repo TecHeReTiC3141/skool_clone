@@ -142,11 +142,11 @@ model Post {
 
 model Comment {
     id           String    @id @default(auto()) @map("_id") @db.ObjectId
-    message      String
+    content      String
     createdAt    DateTime  @default(now())
     updatedAt    DateTime  @updatedAt
-    user         User      @relation("CommentWritten", fields: [userId], references: [id], onDelete: Cascade)
-    userId       String    @db.ObjectId
+    creator      User      @relation("CommentWritten", fields: [creatorId], references: [id], onDelete: Cascade)
+    creatorId    String    @db.ObjectId
     post         Post      @relation("PostComments", fields: [postId], references: [id], onDelete: Cascade)
     postId       String    @db.ObjectId
     parent       Comment?  @relation("ParentChild", fields: [parentId], references: [id], onUpdate: NoAction, onDelete: NoAction)

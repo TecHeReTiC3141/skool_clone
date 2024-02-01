@@ -3,11 +3,12 @@ import {redirect} from "next/navigation";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/lib/config/authOptions";
 import AddNewPost from "@/app/communities/[communitySlug]/community/AddNewPost";
-import {CommunityPagePost, getCommunityPosts, getPostComments, isLiked, PostComments} from "@/app/lib/db/post";
+import {CommunityPagePost, getCommunityPosts, isLiked} from "@/app/lib/db/post";
 import PostCard from "@/app/communities/[communitySlug]/community/PostCard";
 import PaginationBar from "@/app/communities/[communitySlug]/community/PaginationBar";
 import prisma from "@/app/lib/db/prisma";
-import OpenedPost from "@/app/communities/[communitySlug]/community/OpenedPost";
+import OpenedPost from "@/app/communities/[communitySlug]/[postSlug]/OpenedPost";
+import {getPostComments, PostComments} from "@/app/lib/db/comment";
 
 interface CommunityAboutPageProps {
     params: {
@@ -41,7 +42,6 @@ export default async function CommunityAboutPage({params: {communitySlug}, searc
     const totalPosts = await prisma.post.count({
         where: {
             communityId: community.id,
-            answeredPost: null,
         },
     });
 
@@ -79,8 +79,7 @@ export default async function CommunityAboutPage({params: {communitySlug}, searc
                 ))} </div>
                 : <p>There are no posts yet, create first!</p>}
             <PaginationBar currentPage={currentPage} totalPosts={totalPosts}/>
-            {openedPost && openedPostComments && <OpenedPost user={session.user} isLikeSet={await isLiked(session.user.id, openedPost.id)}
-                                       post={openedPost} postComments={openedPostComments}/>}
+            {openedPost && openedPostComments && <OpenedPost post={openedPost}/>}
         </>
     )
 }

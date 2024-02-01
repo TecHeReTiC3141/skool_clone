@@ -1,5 +1,7 @@
-import {CommunityPagePost, getPostComments, PostComments} from "@/app/lib/db/post";
+import {CommunityPagePost} from "@/app/lib/db/post";
 import prisma from "@/app/lib/db/prisma";
+import OpenedPost from "@/app/communities/[communitySlug]/[postSlug]/OpenedPost";
+import {redirect} from "next/navigation";
 
 interface CommunityPostProps {
     params: {
@@ -23,13 +25,12 @@ export default async function CommunityPostPage({params: {postSlug}}: CommunityP
             }
         }
     });
-    let openedPostComments: PostComments | null;
-    if (openedPost) {
-        openedPostComments = await getPostComments(openedPost.id);
-        console.log("comments tree", openedPostComments)
+
+    if (!openedPost) {
+        return redirect("/404");
     }
 
     return (
-        <div>{postSlug}</div>
+        <OpenedPost post={openedPost}/>
     )
 }
