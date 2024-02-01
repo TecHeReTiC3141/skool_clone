@@ -1,6 +1,6 @@
 "use client"
 
-import {CommunityPagePost} from "@/app/lib/db/post";
+import {CommunityPagePost, setLike, unsetLike} from "@/app/lib/db/post";
 import UserAvatar from "@/app/users/[userSlug]/UserAvatar";
 import Link from "next/link";
 import {FaRegComment} from "react-icons/fa6";
@@ -37,6 +37,7 @@ export default function PostCard({user, post, isLikeSet}: PostCardProps) {
                 <div className="flex gap-4 mt-4">
                     <div className="flex gap-2 items-center">
                         <LikeButton disabled={post.creatorId === user.id} userId={user.id} postId={post.id}
+                                    setLike={setLike} unsetLike={unsetLike}
                                     isLikeSet={isLikeSet} className="btn btn-ghost btn-circle btn-sm text-lg flex"/>
                         {post._count.userLikes}
                     </div>

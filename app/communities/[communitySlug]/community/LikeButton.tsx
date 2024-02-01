@@ -1,6 +1,5 @@
 "use client"
 
-import {setLike, unsetLike} from "@/app/lib/db/post";
 import clsx from "clsx";
 import {SlLike} from "react-icons/sl";
 import React, {useEffect, useState} from "react";
@@ -9,12 +8,14 @@ interface LikeButtonProps {
     userId: string,
     postId: string,
     isLikeSet: boolean,
-    disabled: boolean,
+    disabled?: boolean,
     className: string,
-    children?: React.ReactNode
+    children?: React.ReactNode,
+    unsetLike: (userId: string, postId: string) => Promise<void>,
+    setLike: (userId: string, postId: string) => Promise<void>,
 }
 
-export default function LikeButton({userId, postId, isLikeSet, children, className, disabled=false}: LikeButtonProps) {
+export default function LikeButton({userId, postId, isLikeSet, children, className, setLike, unsetLike, disabled=false}: LikeButtonProps) {
 
     const [ isActive, setIsActive ] = useState<boolean>(isLikeSet);
 

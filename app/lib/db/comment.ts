@@ -10,17 +10,29 @@ export interface CommentCreateData {
     answeredPostId: string,
     content: string,
     creatorId: string,
+    parentId?: string | null,
 }
 
-export async function addComment({answeredPostId, content, creatorId}: CommentCreateData) {
-    const slug = slugify(content + "-" + Math.round(Math.random() * 10000), { lower: true });
-    await prisma.comment.create({
-        data: {
-            content,
-            creator: { connect: { id: creatorId }},
-            post: { connect: { id: answeredPostId}}
-        }
-    });
+export async function addComment({answeredPostId, content, creatorId, parentId = null}: CommentCreateData) {
+    const slug = slugify(content + "-" + Math.round(Math.random() * 10000), {lower: true});
+    if (parentId === null) {
+        await prisma.comment.create({
+            data: {
+                content,
+                creator: {connect: {id: creatorId}},
+                post: {connect: {id: answeredPostId}}
+            }
+        });
+    } else {
+        await prisma.comment.create({
+            data: {
+                content,
+                creator: {connect: {id: creatorId}},
+                post: {connect: {id: answeredPostId}},
+                parent: {connect: {id: parentId}},
+            }
+        });
+    }
     revalidatePath("/communities/[communitySlug]/community", "page");
 }
 
@@ -30,7 +42,7 @@ export type CommentWithLikesCount = Comment & { _count: { userLikes: number } };
 
 export type PostComment = CommentWithCreator & CommentWithLikesCount;
 
-export type PostComments = { comments: PostComment[]};
+export type PostComments = { comments: PostComment[] };
 
 export async function getPostComments(postId: string): Promise<PostComments> {
     return (await prisma.post.findUnique({
@@ -50,4 +62,43 @@ export async function getPostComments(postId: string): Promise<PostComments> {
             }
         }
     }))!;
+}
+
+// LIKES
+
+export async function isLiked(userId: string, commentId: string) {
+    return !!await prisma.comment.findUnique({
+        where: {
+            id: commentId,
+            userLikes: {
+                some: {
+                    id: userId,
+                }
+            }
+        }
+    })
+}
+
+export async function setLike(userId: string, commentId: string) {
+    await prisma.comment.update({
+        where: {
+            id: commentId,
+        },
+        data: {
+            userLikes: {connect: {id: userId}},
+        }
+    });
+    revalidatePath("/communities/[communitySlug]/community", "page");
+}
+
+export async function unsetLike(userId: string, commentId: string) {
+    await prisma.comment.update({
+        where: {
+            id: commentId,
+        },
+        data: {
+            userLikes: {disconnect: {id: userId}},
+        }
+    });
+    revalidatePath("/communities/[communitySlug]/community", "page");
 }

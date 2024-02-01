@@ -4,21 +4,22 @@ import UserAvatar from "@/app/users/[userSlug]/UserAvatar";
 import SubmitBtn from "@/app/ui/components/SubmitBtn";
 import {CommentCreateData} from "@/app/lib/db/comment";
 import {SessionUser} from "@/app/lib/db/user";
-import {CommunityPagePost} from "@/app/lib/db/post";
 
 interface AddCommentFormProps {
     user: NonNullable<SessionUser>,
-    post: CommunityPagePost,
+    postId: string,
+    parentId?: string | null,
     addComment: (data: CommentCreateData) => Promise<void>
 }
 
-export default function AddCommentForm({user, post, addComment}:AddCommentFormProps) {
+export default function AddCommentForm({user, postId, addComment, parentId = null}:AddCommentFormProps) {
 
     async function handleAddComment(formData: FormData) {
         const data: CommentCreateData = {
-            answeredPostId: post.id,
+            answeredPostId: postId,
             content: formData.get("comment") as string,
             creatorId: user.id,
+            parentId,
         }
         await addComment(data);
         clearCommentForm();

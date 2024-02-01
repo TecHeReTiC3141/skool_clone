@@ -6,7 +6,7 @@ import {FaRegComment} from "react-icons/fa6";
 import {Suspense} from "react";
 import CommentsList from "@/app/communities/[communitySlug]/[postSlug]/CommentsList";
 import {SessionUser} from "@/app/lib/db/user";
-import {CommunityPagePost, isLiked} from "@/app/lib/db/post";
+import {CommunityPagePost, isLiked, setLike, unsetLike} from "@/app/lib/db/post";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/lib/config/authOptions";
 import {redirect} from "next/navigation";
@@ -82,6 +82,8 @@ export default async function OpenedPost({post}: OpenedPostProps) {
                     <LikeButton disabled={post.creatorId === user.id}
                                 userId={user.id} postId={post.id}
                                 className="btn join-item bg-transparent hover:bg-transparent  text-sm flex w-24"
+                                setLike={setLike}
+                                unsetLike={unsetLike}
                                 isLikeSet={isLikeSet}>{isLikeSet ?
                         <span className="font-bold text-sm">Liked</span> : <span>Like</span>}
                     </LikeButton>
@@ -98,7 +100,7 @@ export default async function OpenedPost({post}: OpenedPostProps) {
                 <CommentsList comments={getReplies("topLevel")} getReplies={getReplies}/>
             </Suspense>}
 
-            <AddCommentForm user={user} post={post} addComment={addComment} />
+            <AddCommentForm user={user} postId={post.id} addComment={addComment} />
 
         </div>
     )
