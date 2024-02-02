@@ -118,10 +118,23 @@ export async function updateComment(commentId: string, newComment: string) {
 }
 
 export async function deleteComment(commentId: string) {
+
+    const comments = await prisma.comment.findMany({
+        where: { parentId: commentId },
+        select: {
+            id: true,
+        }
+    });
+
+    for (let comment of comments) {
+        await deleteComment(comment.id);
+    }
+
     await prisma.comment.delete({
         where: {
             id: commentId,
         },
     });
+
     revalidatePath("/communities/[communitySlug]/community", "page");
 }

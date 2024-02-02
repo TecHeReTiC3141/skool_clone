@@ -1,6 +1,13 @@
 import UserAvatar from "@/app/users/[userSlug]/UserAvatar";
 import Link from "next/link";
-import { addComment, PostComment, setCommentLike, unsetCommentLike, updateComment } from "@/app/lib/db/comment";
+import {
+    addComment,
+    deleteComment,
+    PostComment,
+    setCommentLike,
+    unsetCommentLike,
+    updateComment
+} from "@/app/lib/db/comment";
 import { formatTimeAgo } from "@/app/lib/utils/formating";
 import LikeButton from "@/app/communities/[communitySlug]/community/LikeButton";
 import CommentsList from "@/app/communities/[communitySlug]/[postSlug]/CommentsList";
@@ -9,7 +16,7 @@ import AddCommentForm from "@/app/communities/[communitySlug]/[postSlug]/AddComm
 import clsx from "clsx";
 import { BsThreeDots } from "react-icons/bs";
 import { CommentsByParentId } from "@/app/communities/[communitySlug]/[postSlug]/OpenedPost";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { closeDropdown } from "@/app/lib/utils/DOMmanipulations";
 import UpdateCommentForm from "@/app/communities/[communitySlug]/[postSlug]/UpdateCommentForm";
 
@@ -20,7 +27,7 @@ interface CommentProps {
     isLikeSet: boolean,
 }
 
-export default function Comment({user, isLikeSet, comment, commentByParentId}: CommentProps) {
+export default function Comment({ user, isLikeSet, comment, commentByParentId }: CommentProps) {
 
     const isOwner = user.id === comment.creator.id;
 
@@ -31,7 +38,12 @@ export default function Comment({user, isLikeSet, comment, commentByParentId}: C
 
         <div className="w-full flex gap-2">
             <UserAvatar user={comment.creator} width={36} height={36}/>
-            {isEditing ? <UpdateCommentForm closeEditing={() => setIsEditing(false)} updateComment={updateComment} commentId={comment.id} user={user} initialValue={comment.content}/> :
+            {isEditing ? <div className="w-full">
+                    <UpdateCommentForm closeEditing={() => setIsEditing(false)} updateComment={updateComment}
+                                       commentId={comment.id} user={user} initialValue={comment.content}/>
+                    <CommentsList user={user} comments={commentByParentId[ comment.id ]}
+                                  commentByParentId={commentByParentId}/>
+                </div> :
                 <div className="w-full">
                     <div className={clsx([ "relative rounded-lg px-2 pt-2 pb-3 w-full",
                         isOwner ? "bg-primary text-primary-content" : "bg-base-200 text-base-content" ])}>
@@ -52,7 +64,32 @@ export default function Comment({user, isLikeSet, comment, commentByParentId}: C
                                         <button onClick={() => setIsEditing(prev => !prev)}>Edit</button>
                                     </li>
                                     <li>
-                                        <div>Delete</div>
+                                        <button onClick={() => {
+                                            const dialog = document.getElementById(`delete-${comment.id}`) as HTMLDialogElement;
+                                            dialog.showModal();
+                                        }
+                                        }>Delete
+                                        </button>
+                                        <dialog id={`delete-${comment.id}`} className="modal">
+                                            <div
+                                                className="modal-box absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2">
+                                                <h3 className="font-bold text-lg">Delete comment?</h3>
+                                                <p className="py-4">Are you sure to delete this comment, this actions
+                                                    can&apos;t be undone</p>
+                                                <div className="modal-action">
+                                                    <form method="dialog">
+                                                        {/* if there is a button in form, it will close the modal */}
+                                                        <button className="btn">Cancel</button>
+                                                        <button className="btn btn-warning"
+                                                                onClick={async () => await deleteComment(comment.id)}>Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <form method="dialog" className="modal-backdrop">
+                                                <button>close</button>
+                                            </form>
+                                        </dialog>
                                     </li>
                                 </>}
                                 <li>
@@ -77,8 +114,13 @@ export default function Comment({user, isLikeSet, comment, commentByParentId}: C
                                                        addComment={addComment}
                                                        initialValue={comment.creator.name + " " || ""}/>}
                     </div>
-                    <CommentsList user={user} comments={commentByParentId[ comment.id ]}
-                                  commentByParentId={commentByParentId}/>
+                    <Suspense fallback={
+                        <div className="flex justify-center my-3">
+                            <span className="loading loading-spinner loading-md"></span>
+                        </div>}>
+                        <CommentsList user={user} comments={commentByParentId[ comment.id ]}
+                                      commentByParentId={commentByParentId}/>
+                    </Suspense>
                 </div>
             }
         </div>
