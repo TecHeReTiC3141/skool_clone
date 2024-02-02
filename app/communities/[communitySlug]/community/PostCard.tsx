@@ -1,13 +1,13 @@
 "use client"
 
-import {CommunityPagePost, setPostLike, unsetPostLike} from "@/app/lib/db/post";
+import { CommunityPagePost, setPostLike, unsetPostLike } from "@/app/lib/db/post";
 import UserAvatar from "@/app/users/[userSlug]/UserAvatar";
 import Link from "next/link";
-import {FaRegComment} from "react-icons/fa6";
-import {formatTimeAgo} from "@/app/lib/utils/formating";
-import {SessionUser} from "@/app/lib/db/user";
+import { FaRegComment } from "react-icons/fa6";
+import { formatTimeAgo } from "@/app/lib/utils/formating";
+import { SessionUser } from "@/app/lib/db/user";
 import LikeButton from "@/app/communities/[communitySlug]/community/LikeButton";
-import {usePathname, useSearchParams} from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 interface PostCardProps {
     user: NonNullable<SessionUser>,
@@ -24,7 +24,7 @@ export default function PostCard({user, post, isLikeSet}: PostCardProps) {
 
     return (
         <>
-            <Link href={`${post.slug}`} className="w-full rounded-lg bg-neutral p-4 cursor-pointer">
+            <Link href={`${pathname}?${searchParamsWithPost}`} className="w-full rounded-lg bg-neutral p-4 cursor-pointer">
                 <div className="flex gap-3 items-center">
                     <UserAvatar user={post.creator} width={32} height={32}/>
                     <div>

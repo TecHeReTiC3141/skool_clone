@@ -8,7 +8,7 @@ import PostCard from "@/app/communities/[communitySlug]/community/PostCard";
 import PaginationBar from "@/app/ui/components/PaginationBar";
 import prisma from "@/app/lib/db/prisma";
 import OpenedPost from "@/app/communities/[communitySlug]/[postSlug]/OpenedPost";
-import { getPostComments, PostComments } from "@/app/lib/db/comment";
+import Link from "next/link";
 
 interface CommunityAboutPageProps {
     params: {
@@ -20,7 +20,7 @@ interface CommunityAboutPageProps {
     }
 }
 
-export default async function CommunityAboutPage({params: {communitySlug}, searchParams: {page = "1", openedPostSlug}}: CommunityAboutPageProps) {
+export default async function CommunityAboutPage({ params: { communitySlug }, searchParams: { page = "1", openedPostSlug } }: CommunityAboutPageProps) {
 
     const currentPage = +page;
     console.log("in about page", communitySlug, currentPage);
@@ -45,7 +45,7 @@ export default async function CommunityAboutPage({params: {communitySlug}, searc
         },
     });
 
-    let openedPost: CommunityPagePost | null = null, openedPostComments: PostComments | null = null;
+    let openedPost: CommunityPagePost | null = null;
 
     if (openedPostSlug) {
         openedPost = await prisma.post.findUnique({
@@ -62,13 +62,7 @@ export default async function CommunityAboutPage({params: {communitySlug}, searc
                 }
             }
         });
-        if (openedPost) {
-            openedPostComments = await getPostComments(openedPost.id);
-            console.log("comments tree", openedPostComments)
-        }
     }
-
-    console.log("page rerendered");
 
     return (
         <>
@@ -79,7 +73,15 @@ export default async function CommunityAboutPage({params: {communitySlug}, searc
                 ))} </div>
                 : <p>There are no posts yet, create first!</p>}
             <PaginationBar currentPage={currentPage} totalPosts={totalPosts}/>
-            {openedPost && openedPostComments && <OpenedPost post={openedPost}/>}
+            {openedPost && <div className="modal modal-open">
+                <div className="modal-box bg-neutral absolute top-4 h-[95%] overflow-x-hidden max-w-2xl">
+                    <OpenedPost post={openedPost}/>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <Link href={`/communities/${communitySlug}/community`}></Link>
+                </form>
+            </div>
+            }
         </>
     )
 }
