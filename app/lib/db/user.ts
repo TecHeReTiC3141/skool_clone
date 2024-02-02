@@ -29,7 +29,10 @@ export type SessionUser =
     image?: string | null | undefined
 } | undefined;
 
-export type UserWithCommunities = User & {communities: { community: CommunityMembershipData}[]}
+export type UserWithCommunities = User & { communities: { community: CommunityMembershipData }[] };
+export type UserWithFollowerCount = User & { _count: { followedBy: number, following: number } };
+
+export type UserProfileInfo = UserWithFollowerCount & UserWithCommunities;
 
 export async function createUser({name, email, password}: UserCredentials): Promise<User> {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -56,12 +59,18 @@ export async function updateUserImage(id: string, newUrl: string) {
     revalidatePath("/settings");
 }
 
-export async function getUserBySlug(slug: string): Promise<UserWithCommunities | null> {
+export async function getUserBySlug(slug: string): Promise<UserProfileInfo | null> {
     return await prisma.user.findUnique({
         where: {
             slug,
         },
         include: {
+            _count: {
+                select: {
+                    followedBy: true,
+                    following: true,
+                }
+            },
             communities: {
                 include: {
                     community: {
@@ -83,4 +92,47 @@ export async function getUserBySlug(slug: string): Promise<UserWithCommunities |
             }
         }
     });
+}
+
+// FOLLOWERS SYSTEM
+
+export async function isFollower(followerId: string, followingId: string): Promise<boolean> {
+    return !!(await prisma.user.findUnique({
+        where: {
+            id: followingId,
+            followedBy: {
+                some: {
+                    id: followerId,
+                }
+            }
+        }
+    }));
+}
+
+export async function followUser(followerId: string, followingId: string): Promise<void> {
+    await prisma.user.update({
+        where: {id: followingId},
+        data: {
+            followedBy: {
+                connect: {
+                    id: followerId,
+                }
+            }
+        }
+    });
+    revalidatePath("/users/[userSlug]");
+}
+
+export async function unfollowUser(followerId: string, followingId: string): Promise<void> {
+    await prisma.user.update({
+        where: {id: followingId},
+        data: {
+            followedBy: {
+                disconnect: {
+                    id: followerId,
+                }
+            }
+        }
+    });
+    revalidatePath("/users/[userSlug]");
 }

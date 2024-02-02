@@ -1,10 +1,10 @@
 "use client"
 
-import {FaUser} from "react-icons/fa6";
 import {Session} from "next-auth";
 import Link from "next/link";
 import LogOutModal from "@/app/ui/components/auth/LogOutModal";
-import Image from "next/image";
+import UserAvatar from "@/app/users/[userSlug]/UserAvatar";
+import {closeDropdown} from "@/app/lib/utils/DOMmanipulations";
 
 interface UserMenuBtnProps {
     session: Session | null,
@@ -19,13 +19,11 @@ export default function UserMenuBtn({session}: UserMenuBtnProps) {
             <div className="dropdown dropdown-end">
                 <div className="tooltip tooltip-bottom" data-tip="User menu">
                     <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-                        {user?.image ? <Image className="rounded-full h-16 w-16"
-                                              src={user?.image} alt={user?.name || ""}
-                                              width={160} height={160}/> : <FaUser className="text-xl"/>}
+                        <UserAvatar user={user} width={48} height={48} />
                     </div>
                 </div>
                 <ul tabIndex={0}
-                    className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-neutral rounded-box w-52 top-[80%]">
+                    className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-neutral rounded-box w-52 top-[80%]" onClick={closeDropdown}>
                     {user ?
                         <>
                             <li className="px-2 py-2">
