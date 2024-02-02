@@ -16,8 +16,7 @@ export default async function CommunitiesGrid({ page }: CommunitiesGridProps) {
     const totalCommunities = await prisma.community.count();
 
     return (
-        <div className="max-w-5xl mx-auto">
-
+        <>
             <div
                 className="mt-6 mb-8 w-full grid gap-x-16 justify-center gap-y-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {communities.map((community, index) => (
@@ -26,6 +25,6 @@ export default async function CommunitiesGrid({ page }: CommunitiesGridProps) {
                 ))}
             </div>
             <PaginationBar currentPage={page} totalEntries={totalCommunities} elementsOnPage={COMMUNITIES_ON_PAGE}/>
-        </div>
+        </>
     )
 }

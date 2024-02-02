@@ -1,4 +1,5 @@
-import {FaApple, FaBookOpen, FaBrush, FaGuitar, FaMoneyBillTrendUp} from "react-icons/fa6";
+import { FaApple, FaBookOpen, FaBrush, FaGuitar, FaMoneyBillTrendUp } from "react-icons/fa6";
+import type { JSX } from "react";
 
 export interface FilterOption {
     readonly value: string;
@@ -13,7 +14,13 @@ export const filterOptions: readonly FilterOption[] = [
     { value: 'music', label: 'Music', },
 ];
 
-export const filters = {
+export type FilterName = "business" | "health & fitness" |  "personal development" | "arts & crafts" | "music";
+
+export type Filters = {
+    [key in FilterName]: JSX.Element;
+};
+
+export const filters: Filters = {
     business: <FaMoneyBillTrendUp />,
     "health & fitness": <FaApple />,
     "personal development": <FaBookOpen />,
