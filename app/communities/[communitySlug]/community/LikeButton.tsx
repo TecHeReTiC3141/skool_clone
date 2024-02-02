@@ -23,9 +23,11 @@ export default function LikeButton({userId, postId, isLikeSet, children, classNa
         setIsActive(isLikeSet);
     }, [isLikeSet]);
 
+
     return (
         <button disabled={disabled} onClick={async event => {
             event.stopPropagation();
+            event.preventDefault();
             setIsActive(prevIsActive => !prevIsActive);
             await (isLikeSet ? unsetLike : setLike)(userId, postId);
         }} className={clsx([className, isActive && "text-yellow-300"])}><SlLike/> {children}</button>

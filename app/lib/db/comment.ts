@@ -40,7 +40,7 @@ export type CommentWithCreator = Comment & { creator: User };
 
 export type CommentWithLikesCount = Comment & { _count: { userLikes: number } };
 
-export type PostComment = CommentWithCreator & CommentWithLikesCount;
+export type PostComment = CommentWithCreator & CommentWithLikesCount & {isLikeSet?: boolean};
 
 export type PostComments = { comments: PostComment[] };
 

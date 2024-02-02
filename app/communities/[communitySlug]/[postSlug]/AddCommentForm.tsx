@@ -15,7 +15,7 @@ interface AddCommentFormProps {
     initialValue?: string,
 }
 
-export default function AddCommentForm({user, postId, addComment, parentId = null, initialValue=""}: AddCommentFormProps) {
+export default function AddCommentForm({user, postId, addComment, parentId = null, initialValue = ""}: AddCommentFormProps) {
 
     const [ comment, setComment ] = useState("");
 
@@ -30,12 +30,15 @@ export default function AddCommentForm({user, postId, addComment, parentId = nul
         }
         await addComment(data);
         setComment("");
-        setIsOpened(false);
+        if (parentId !== null) {
+            setIsOpened(false);
+        }
     }
 
     return (
         <>
-            {parentId !== null && <button className="btn btn-ghost btn-sm" onClick={() => setIsOpened(true)}>Reply</button>}
+            {parentId !== null &&
+                <button className="btn btn-ghost btn-sm" onClick={() => setIsOpened(true)}>Reply</button>}
             <form action={handleAddComment} className={clsx([ "w-full mt-4", !isOpened && "hidden" ])}>
                 <div className="w-full flex gap-2 items-center">
                     <UserAvatar user={user} width={32} height={32}/>
