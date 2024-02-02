@@ -68,10 +68,24 @@ export default async function CommunityAboutPage({ params: { communitySlug }, se
     return (
         <>
             <AddNewPost user={session.user} community={community}/>
-            {posts.length > 0 ? <div className="w-full flex flex-col gap-6"> {posts.map(async post => (
-                    <PostCard user={session.user} isLikeSet={await isPostLiked(session.user.id, post.id)} post={post}
-                              key={post.id}/>
-                ))} </div>
+            {posts.length > 0 ? <div className="w-full flex flex-col gap-6"> {posts.map(async post => {
+                    const userLevel = await prisma.communityMembership.findUnique({
+                        where: {
+                            userId_communityId: {
+                                userId: post.creatorId,
+                                communityId: post.communityId,
+                            }
+                        },
+                        select: {
+                            level: true,
+                        }
+                    });
+                    return (
+
+                        <PostCard user={session.user} isLikeSet={await isPostLiked(session.user.id, post.id)} post={post}
+                                  key={post.id} userLevel={userLevel?.level}/>
+                    )
+                })} </div>
                 : <p>There are no posts yet, create first!</p>}
             <PaginationBar elementsOnPage={POSTS_ON_PAGE} currentPage={currentPage} totalEntries={totalPosts}/>
             {openedPost && <div className="modal modal-open">

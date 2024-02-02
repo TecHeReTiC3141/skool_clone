@@ -51,7 +51,19 @@ export default async function OpenedPost({ post }: OpenedPostProps) {
 
     const commentByParentId = await getCommentsByParentId(postComments.comments);
 
-    console.log("is like set", isLikeSet);
+    const userLevel = await prisma?.communityMembership.findUnique({
+        where: {
+            userId_communityId: {
+                userId: user.id,
+                communityId: post.communityId,
+            },
+        },
+        select: {
+            level: true,
+        }
+    });
+
+    console.log("userLevel", userLevel);
 
     return (
 
@@ -62,7 +74,7 @@ export default async function OpenedPost({ post }: OpenedPostProps) {
             <div className="flex justify-between items-center mb-4">
 
                 <div className="flex gap-3 items-center z-5 sticky top-0">
-                    <UserAvatar user={post.creator} width={40} height={40}/>
+                    <UserAvatar user={post.creator} width={40} height={40} level={userLevel?.level || 0}/>
                     <div>
                         <Link className="font-bold"
                               href={`/users/${post.creator.slug}`}>{post.creator.name}</Link>
@@ -81,7 +93,9 @@ export default async function OpenedPost({ post }: OpenedPostProps) {
                             <li>
                                 <CopyLinkButton/>
                             </li>
-                            <li><div>Report to admins</div></li>
+                            <li>
+                                <div>Report to admins</div>
+                            </li>
                         </ul>
                     </div>
                 </div>

@@ -109,7 +109,7 @@ model CommunityMembership {
     level       Int               @default(1)
     points      Int               @default(0)
 
-    @@index([userId, communityId])
+    @@unique([userId, communityId])
     @@map("community_memberships")
 }
 

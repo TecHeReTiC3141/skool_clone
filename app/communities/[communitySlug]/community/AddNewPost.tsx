@@ -70,7 +70,7 @@ export default function AddNewPost({user, community}: AddNewPostProps) {
     return (
         <div className="bg-neutral w-full py-2 px-4 flex items-center gap-3 rounded-md mb-4"
              onClick={() => setIsOpened(true)}>
-            <UserAvatar user={user} width={50} height={50}/>
+            <UserAvatar user={user} width={36} height={36}/>
             <p className="text-lg ">Write something</p>
         </div>
     )

@@ -1,9 +1,9 @@
 import Image from "next/image";
-import {FaGlobe, FaLock} from "react-icons/fa6";
-import {CommunityAccessLevel, CommunityUserRole} from "@prisma/client";
-import {checkIfUserInCommunity, CommunityWithMemberCount, CommunityWithMembers} from "@/app/lib/db/community";
-import {getServerSession} from "next-auth";
-import {authOptions} from "@/app/lib/config/authOptions";
+import { FaGlobe, FaLock } from "react-icons/fa6";
+import { CommunityAccessLevel, CommunityUserRole } from "@prisma/client";
+import { checkIfUserInCommunity, CommunityWithMemberCount, CommunityWithMembers } from "@/app/lib/db/community";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/lib/config/authOptions";
 import CommunityJoinButton from "@/app/communities/[communitySlug]/CommunityJoinButton";
 import Link from "next/link";
 
@@ -22,10 +22,7 @@ export default async function CommunityInfoCard({community}: CommunityInfoCardPr
             <figure><Image src={community.thumb} alt={community.name}
                            width={280} height={280} className="w-full"/></figure>
             <div className="card-body">
-                <div className="flex gap-4 items-center">
-                    <h2 className="card-title">{community.name}</h2>
-                    <p className="text-sm badge badge-primary">@{community.slug}</p>
-                </div>
+                <h2 className="card-title">{community.name}</h2>
                 <p className="text-sm flex gap-1 items-center">{community.accessLevel === CommunityAccessLevel.PUBLIC ? <FaGlobe /> : <FaLock />}
                     {community.accessLevel[0] + community.accessLevel.slice(1).toLowerCase()} group</p>
 

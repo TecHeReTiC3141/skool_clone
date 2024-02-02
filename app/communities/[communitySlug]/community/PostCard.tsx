@@ -13,9 +13,10 @@ interface PostCardProps {
     user: NonNullable<SessionUser>,
     isLikeSet: boolean,
     post: CommunityPagePost,
+    userLevel?: number,
 }
 
-export default function PostCard({user, post, isLikeSet}: PostCardProps) {
+export default function PostCard({user, post, isLikeSet, userLevel}: PostCardProps) {
 
     const pathname = usePathname(), searchParams = useSearchParams();
 
@@ -26,7 +27,7 @@ export default function PostCard({user, post, isLikeSet}: PostCardProps) {
         <>
             <Link href={`${pathname}?${searchParamsWithPost}`} className="w-full rounded-lg bg-neutral p-4 cursor-pointer">
                 <div className="flex gap-3 items-center">
-                    <UserAvatar user={post.creator} width={32} height={32}/>
+                    <UserAvatar user={post.creator} width={32} height={32} level={userLevel || 0}/>
                     <div>
                         <Link className="font-bold" href={`/users/${post.creator.slug}`}>{post.creator.name}</Link>
                         <p className="text-sm">{formatTimeAgo(post.createdAt)}</p>
