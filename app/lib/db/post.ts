@@ -56,7 +56,7 @@ export async function getCommunityPosts(communityId: string, page: number): Prom
 
 // LIKES
 
-export async function isLiked(userId: string, postId: string) {
+export async function isPostLiked(userId: string, postId: string) {
     return !!await prisma.post.findUnique({
         where: {
             id: postId,
@@ -69,7 +69,7 @@ export async function isLiked(userId: string, postId: string) {
     })
 }
 
-export async function setLike(userId: string, postId: string) {
+export async function setPostLike(userId: string, postId: string) {
     await prisma.post.update({
         where: {
             id: postId,
@@ -81,7 +81,7 @@ export async function setLike(userId: string, postId: string) {
     revalidatePath("/communities/[communitySlug]/community", "page");
 }
 
-export async function unsetLike(userId: string, postId: string) {
+export async function unsetPostLike(userId: string, postId: string) {
     await prisma.post.update({
         where: {
             id: postId,

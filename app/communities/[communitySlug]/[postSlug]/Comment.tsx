@@ -2,7 +2,7 @@
 
 import UserAvatar from "@/app/users/[userSlug]/UserAvatar";
 import Link from "next/link";
-import {addComment, PostComment, setLike, unsetLike} from "@/app/lib/db/comment";
+import {addComment, PostComment, setCommentLike, unsetCommentLike} from "@/app/lib/db/comment";
 import {formatTimeAgo} from "@/app/lib/utils/formating";
 import LikeButton from "@/app/communities/[communitySlug]/community/LikeButton";
 import CommentsList from "@/app/communities/[communitySlug]/[postSlug]/CommentsList";
@@ -54,7 +54,7 @@ export default function Comment({user, isLikeSet, comment, commentByParentId}: C
                 <div className="flex gap-2 items-center mt-1 flex-wrap">
                     <LikeButton userId={user.id} postId={comment.id} isLikeSet={isLikeSet}
                                 disabled={isOwner}
-                                unsetLike={unsetLike} setLike={setLike}
+                                unsetLike={unsetCommentLike} setLike={setCommentLike}
                                 className="btn btn-ghost btn-circle btn-sm text-lg flex"/>
                     {comment._count.userLikes}
                     <AddCommentForm user={user} parentId={comment.id} postId={comment.postId} addComment={addComment}

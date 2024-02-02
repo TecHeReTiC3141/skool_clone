@@ -6,11 +6,11 @@ import {FaArrowLeftLong, FaRegComment} from "react-icons/fa6";
 import {Suspense} from "react";
 import CommentsList from "@/app/communities/[communitySlug]/[postSlug]/CommentsList";
 import {SessionUser} from "@/app/lib/db/user";
-import {CommunityPagePost, isLiked, setLike, unsetLike} from "@/app/lib/db/post";
+import {CommunityPagePost, isPostLiked, setPostLike, unsetPostLike} from "@/app/lib/db/post";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/lib/config/authOptions";
 import {redirect} from "next/navigation";
-import {addComment, getPostComments, PostComment, PostComments} from "@/app/lib/db/comment";
+import {addComment, getPostComments, isCommentLiked, PostComment, PostComments} from "@/app/lib/db/comment";
 import AddCommentForm from "@/app/communities/[communitySlug]/[postSlug]/AddCommentForm";
 
 
@@ -31,7 +31,7 @@ export default async function OpenedPost({post}: OpenedPostProps) {
 
     const user: NonNullable<SessionUser> = session.user;
 
-    const isLikeSet = await isLiked(user.id, post.id);
+    const isLikeSet = await isPostLiked(user.id, post.id);
 
     const postComments: PostComments = await getPostComments(post.id);
 
@@ -41,11 +41,10 @@ export default async function OpenedPost({post}: OpenedPostProps) {
         } = {"topLevel": []};
 
         for (const comment of comments) {
-            comment.isLikeSet = await isLiked(user.id, comment.id);
+            comment.isLikeSet = await isCommentLiked(user.id, comment.id);
             group[ comment.parentId || "topLevel" ] ||= [];
             group[ comment.parentId || "topLevel" ].push(comment);
         }
-
         return group;
     }
 
@@ -85,8 +84,8 @@ export default async function OpenedPost({post}: OpenedPostProps) {
                     <LikeButton disabled={post.creatorId === user.id}
                                 userId={user.id} postId={post.id}
                                 className="btn join-item bg-transparent hover:bg-transparent  text-sm flex w-24"
-                                setLike={setLike}
-                                unsetLike={unsetLike}
+                                setLike={setPostLike}
+                                unsetLike={unsetPostLike}
                                 isLikeSet={isLikeSet}>{isLikeSet ?
                         <span className="font-bold text-sm">Liked</span> : <span>Like</span>}
                     </LikeButton>

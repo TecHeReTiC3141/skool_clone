@@ -3,7 +3,7 @@ import {redirect} from "next/navigation";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/lib/config/authOptions";
 import AddNewPost from "@/app/communities/[communitySlug]/community/AddNewPost";
-import {CommunityPagePost, getCommunityPosts, isLiked} from "@/app/lib/db/post";
+import {CommunityPagePost, getCommunityPosts, isPostLiked} from "@/app/lib/db/post";
 import PostCard from "@/app/communities/[communitySlug]/community/PostCard";
 import PaginationBar from "@/app/communities/[communitySlug]/community/PaginationBar";
 import prisma from "@/app/lib/db/prisma";
@@ -74,7 +74,7 @@ export default async function CommunityAboutPage({params: {communitySlug}, searc
         <>
             <AddNewPost user={session.user} community={community}/>
             {posts.length > 0 ? <div className="w-full flex flex-col gap-6"> {posts.map(async post => (
-                    <PostCard user={session.user} isLikeSet={await isLiked(session.user.id, post.id)} post={post}
+                    <PostCard user={session.user} isLikeSet={await isPostLiked(session.user.id, post.id)} post={post}
                               key={post.id}/>
                 ))} </div>
                 : <p>There are no posts yet, create first!</p>}
