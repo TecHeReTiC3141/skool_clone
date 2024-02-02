@@ -1,10 +1,17 @@
 import Link from "next/link";
-import {FaMagnifyingGlass} from "react-icons/fa6";
+import { FaMagnifyingGlass } from "react-icons/fa6";
 import FiltersBar from "@/app/ui/components/FiltersBar";
 import CommunitiesGrid from "@/app/ui/components/CommunitiesGrid";
 
+interface HomeProps {
+    searchParams: {
+        page?: string,
+    }
+}
 
-export default function Home() {
+
+export default function Home({searchParams: {page = "1"}}: HomeProps) {
+
     return (
         <div className="text-center text-3xl">
             <h2 className="text-[2.75rem] mt-12 font-bold tracking-tight">Discover communities</h2>
@@ -20,7 +27,7 @@ export default function Home() {
                 </div>
             </form>
             <FiltersBar />
-            <CommunitiesGrid />
+            <CommunitiesGrid page={+page} />
         </div>
     )
 }

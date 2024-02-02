@@ -1,10 +1,11 @@
 "use server"
 
 import prisma from "@/app/lib/db/prisma";
-import {Community, CommunityAccessLevel, CommunityUserRole} from "@prisma/client";
-import {redirect} from "next/navigation";
+import { Community, CommunityAccessLevel, CommunityUserRole } from "@prisma/client";
+import { redirect } from "next/navigation";
 import slugify from "slugify";
-import {SessionUser} from "@/app/lib/db/user";
+import { SessionUser } from "@/app/lib/db/user";
+import { COMMUNITIES_ON_PAGE } from "@/app/lib/params";
 
 export type CreateCommunityData = {
     creatorId: string,
@@ -87,7 +88,7 @@ export type CommunityWithCreator = Community & {
 export type CommunityWithAllMembers = CommunityWithMemberCount & CommunityWithMembers & CommunityWithCreator;
 
 
-export async function getMainPageCommunities(): Promise<CommunityWithMemberCount[]> {
+export async function getMainPageCommunities(page: number): Promise<CommunityWithMemberCount[]> {
     return await prisma.community.findMany({
         orderBy: {
             members: {
@@ -98,7 +99,9 @@ export async function getMainPageCommunities(): Promise<CommunityWithMemberCount
             _count: {
                 select: {members: true},
             },
-        }
+        },
+        take: COMMUNITIES_ON_PAGE,
+        skip: (page - 1) * COMMUNITIES_ON_PAGE,
     });
 }
 

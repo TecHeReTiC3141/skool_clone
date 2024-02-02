@@ -9,6 +9,7 @@ import PaginationBar from "@/app/ui/components/PaginationBar";
 import prisma from "@/app/lib/db/prisma";
 import OpenedPost from "@/app/communities/[communitySlug]/[postSlug]/OpenedPost";
 import Link from "next/link";
+import { POSTS_ON_PAGE } from "@/app/lib/params";
 
 interface CommunityAboutPageProps {
     params: {
@@ -72,7 +73,7 @@ export default async function CommunityAboutPage({ params: { communitySlug }, se
                               key={post.id}/>
                 ))} </div>
                 : <p>There are no posts yet, create first!</p>}
-            <PaginationBar currentPage={currentPage} totalPosts={totalPosts}/>
+            <PaginationBar elementsOnPage={POSTS_ON_PAGE} currentPage={currentPage} totalEntries={totalPosts}/>
             {openedPost && <div className="modal modal-open">
                 <div className="modal-box bg-neutral absolute top-4 h-[95%] overflow-x-hidden max-w-2xl">
                     <OpenedPost post={openedPost}/>

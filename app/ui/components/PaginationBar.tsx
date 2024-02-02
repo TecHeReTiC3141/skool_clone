@@ -2,18 +2,18 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { POSTS_ON_PAGE } from "@/app/lib/params";
 import type { JSX } from "react";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 
 
 interface PaginationProps {
     currentPage: number,
-    totalPosts: number,
+    totalEntries: number,
+    elementsOnPage: number,
 }
 
-export default function PaginationBar({currentPage, totalPosts}: PaginationProps) {
-    const totalPages = Math.floor((totalPosts + POSTS_ON_PAGE - 1) / POSTS_ON_PAGE);
+export default function PaginationBar({currentPage, elementsOnPage, totalEntries}: PaginationProps) {
+    const totalPages = Math.floor((totalEntries + elementsOnPage - 1) / elementsOnPage);
     const pathname = usePathname(), searchParams = useSearchParams();
     const pagesBtns: JSX.Element[] = [];
 
@@ -93,7 +93,7 @@ export default function PaginationBar({currentPage, totalPosts}: PaginationProps
                 {currentPage < totalPages && <Link href={`${pathname}?${nextPageSearchParams.toString()}`}
                        className="btn rounded-full btn-ghost text-sm">Next <FaAngleRight/></Link>}
             </div>
-            <p className="text-sm">{(currentPage - 1) * POSTS_ON_PAGE + 1}-{currentPage * POSTS_ON_PAGE} of {totalPosts}</p>
+            <p className="text-sm">{(currentPage - 1) * elementsOnPage + 1}-{currentPage * elementsOnPage} of {totalEntries}</p>
         </div>
     )
 }

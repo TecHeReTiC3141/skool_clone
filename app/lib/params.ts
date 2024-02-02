@@ -1,3 +1,4 @@
-const POSTS_ON_PAGE = 10;
+const POSTS_ON_PAGE = 30;
+const COMMUNITIES_ON_PAGE = 30;
 
-export { POSTS_ON_PAGE };
+export { POSTS_ON_PAGE, COMMUNITIES_ON_PAGE };
