@@ -19,6 +19,7 @@ import { CommentsByParentId } from "@/app/communities/[communitySlug]/[postSlug]
 import { Suspense, useState } from "react";
 import { closeDropdown } from "@/app/lib/utils/DOMmanipulations";
 import UpdateCommentForm from "@/app/communities/[communitySlug]/[postSlug]/UpdateCommentForm";
+import CopyLinkButton from "@/app/communities/[communitySlug]/[postSlug]/CopyLinkButton";
 
 interface CommentProps {
     comment: PostComment,
@@ -93,7 +94,7 @@ export default function Comment({ user, isLikeSet, comment, commentByParentId }:
                                     </li>
                                 </>}
                                 <li>
-                                    <div>Copy the link</div>
+                                    <CopyLinkButton />
                                 </li>
                                 <li>
                                     <div>Report to admins</div>

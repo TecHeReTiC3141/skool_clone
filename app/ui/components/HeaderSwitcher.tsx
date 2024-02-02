@@ -1,11 +1,11 @@
 "use client"
 
-import {SessionUser} from "@/app/lib/db/user";
+import { SessionUser } from "@/app/lib/db/user";
 import Link from "next/link";
-import {CommunityMembershipData} from "@/app/lib/db/community";
-import {LuChevronsUpDown} from "react-icons/lu";
+import { CommunityMembershipData } from "@/app/lib/db/community";
+import { LuChevronsUpDown } from "react-icons/lu";
 import HeaderSwitcherItem from "@/app/ui/components/HeaderSwitcherItem";
-import {FaCompass, FaPlus} from "react-icons/fa6";
+import { FaCompass, FaPlus } from "react-icons/fa6";
 
 
 interface HeaderSwitcherProps {
@@ -20,7 +20,7 @@ export default function HeaderSwitcher({user, communities}: HeaderSwitcherProps)
             <Link className="btn btn-ghost text-2xl text-accent" href="/">
                 Skool
             </Link>
-            <div className="dropdown dropdown-end">
+            <div className="dropdown dropdown-end z-60">
                 <div tabIndex={0} role="button" className="btn btn-ghost rounded-full text-lg"><LuChevronsUpDown/></div>
                 <div tabIndex={0}
                      className="menu dropdown-content z-[1] px-0 py-3 shadow bg-base-300 rounded-box w-52 mt-4 translate-x-[35%]">
