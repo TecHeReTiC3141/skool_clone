@@ -1,14 +1,14 @@
 "use server"
 
 import prisma from "@/app/lib/db/prisma";
-import {User} from "@prisma/client";
+import { User } from "@prisma/client";
 
 import slugify from "slugify";
 import bcrypt from "bcrypt"
-import {revalidatePath} from "next/cache";
-import {CommunityMembershipData} from "@/app/lib/db/community";
+import { revalidatePath } from "next/cache";
+import { CommunityMembershipData } from "@/app/lib/db/community";
 
-interface UserCredentials {
+export interface UserCredentials {
     name: string,
     email: string,
     password: string,

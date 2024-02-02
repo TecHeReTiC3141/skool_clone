@@ -1,10 +1,10 @@
 "use client"
 
-import {useState} from "react";
-import {SessionUser} from "@/app/lib/db/user";
-import {Community} from "@prisma/client";
+import { useState } from "react";
+import { SessionUser } from "@/app/lib/db/user";
+import { Community } from "@prisma/client";
 import UserAvatar from "@/app/users/[userSlug]/UserAvatar";
-import {createPost, PostCreateData} from "@/app/lib/db/post";
+import { createPost, PostCreateData } from "@/app/lib/db/post";
 import SubmitBtn from "@/app/ui/components/SubmitBtn";
 
 interface AddNewPostProps {
@@ -14,6 +14,8 @@ interface AddNewPostProps {
 
 export default function AddNewPost({user, community}: AddNewPostProps) {
     const [ isOpened, setIsOpened ] = useState(false);
+
+    // TODO: implement adding images to the post
 
     async function handleSubmit(formData: FormData) {
         const data: PostCreateData = {
