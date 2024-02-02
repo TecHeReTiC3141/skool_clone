@@ -2,9 +2,9 @@
 
 import UserAvatar from "@/app/users/[userSlug]/UserAvatar";
 import SubmitBtn from "@/app/ui/components/SubmitBtn";
-import {CommentCreateData} from "@/app/lib/db/comment";
-import {SessionUser} from "@/app/lib/db/user";
-import {useState} from "react";
+import { CommentCreateData } from "@/app/lib/db/comment";
+import { SessionUser } from "@/app/lib/db/user";
+import { useState } from "react";
 import clsx from "clsx";
 
 interface AddCommentFormProps {
@@ -17,7 +17,7 @@ interface AddCommentFormProps {
 
 export default function AddCommentForm({user, postId, addComment, parentId = null, initialValue = ""}: AddCommentFormProps) {
 
-    const [ comment, setComment ] = useState("");
+    const [ comment, setComment ] = useState(initialValue);
 
     const [ isOpened, setIsOpened ] = useState(parentId === null);
 
@@ -37,9 +37,7 @@ export default function AddCommentForm({user, postId, addComment, parentId = nul
 
     return (
         <>
-            {parentId !== null &&
-                <button className="btn btn-ghost btn-sm" onClick={() => setIsOpened(true)}>Reply</button>}
-            <form action={handleAddComment} className={clsx([ "w-full mt-4", !isOpened && "hidden" ])}>
+            <form action={handleAddComment} className={clsx([ "w-full", parentId === null && "mt-4" ])}>
                 <div className="w-full flex gap-2 items-center">
                     <UserAvatar user={user} width={32} height={32}/>
                     <input type="text" name="comment" id="comment"

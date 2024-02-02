@@ -1,10 +1,10 @@
 "use client"
 
 import Link from "next/link";
-import {usePathname, useSearchParams} from "next/navigation";
-import {POSTS_ON_PAGE} from "@/app/lib/params";
-import type {JSX} from "react";
-import {FaAngleLeft, FaAngleRight} from "react-icons/fa6";
+import { usePathname, useSearchParams } from "next/navigation";
+import { POSTS_ON_PAGE } from "@/app/lib/params";
+import type { JSX } from "react";
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 
 
 interface PaginationProps {

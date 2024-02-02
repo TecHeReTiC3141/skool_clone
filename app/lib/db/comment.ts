@@ -2,8 +2,8 @@
 
 import slugify from "slugify";
 import prisma from "@/app/lib/db/prisma";
-import {revalidatePath} from "next/cache";
-import {Comment, User} from "@prisma/client";
+import { revalidatePath } from "next/cache";
+import { Comment, User } from "@prisma/client";
 
 // COMMENTS
 export interface CommentCreateData {
@@ -99,6 +99,29 @@ export async function unsetCommentLike(userId: string, commentId: string) {
         data: {
             userLikes: {disconnect: {id: userId}},
         }
+    });
+    revalidatePath("/communities/[communitySlug]/community", "page");
+}
+
+// EDITING
+
+export async function updateComment(commentId: string, newComment: string) {
+    await prisma.comment.update({
+        where: {
+            id: commentId,
+        },
+        data: {
+            content: newComment,
+        }
+    });
+    revalidatePath("/communities/[communitySlug]/community", "page");
+}
+
+export async function deleteComment(commentId: string) {
+    await prisma.comment.delete({
+        where: {
+            id: commentId,
+        },
     });
     revalidatePath("/communities/[communitySlug]/community", "page");
 }

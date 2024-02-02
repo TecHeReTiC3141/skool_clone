@@ -1,14 +1,14 @@
-import {checkIfUserInCommunity, getCommunityFromSlug} from "@/app/lib/db/community";
-import {redirect} from "next/navigation";
-import {getServerSession} from "next-auth";
-import {authOptions} from "@/app/lib/config/authOptions";
+import { checkIfUserInCommunity, getCommunityFromSlug } from "@/app/lib/db/community";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/lib/config/authOptions";
 import AddNewPost from "@/app/communities/[communitySlug]/community/AddNewPost";
-import {CommunityPagePost, getCommunityPosts, isPostLiked} from "@/app/lib/db/post";
+import { CommunityPagePost, getCommunityPosts, isPostLiked } from "@/app/lib/db/post";
 import PostCard from "@/app/communities/[communitySlug]/community/PostCard";
-import PaginationBar from "@/app/communities/[communitySlug]/community/PaginationBar";
+import PaginationBar from "@/app/ui/components/PaginationBar";
 import prisma from "@/app/lib/db/prisma";
 import OpenedPost from "@/app/communities/[communitySlug]/[postSlug]/OpenedPost";
-import {getPostComments, PostComments} from "@/app/lib/db/comment";
+import { getPostComments, PostComments } from "@/app/lib/db/comment";
 
 interface CommunityAboutPageProps {
     params: {
