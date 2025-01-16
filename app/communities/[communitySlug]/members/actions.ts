@@ -1,8 +1,8 @@
 "use server"
 
-import {UserOfUserList} from "@/app/users/[userSlug]/actions";
+import { UserOfUserList } from "@/app/users/[userSlug]/actions";
 import prisma from "@/app/lib/db/prisma";
-import {CommunityUserRole} from "@prisma/client";
+import { CommunityUserRole } from "@prisma/client";
 
 export interface CommunityMembersListData {
     members: ({
@@ -11,7 +11,7 @@ export interface CommunityMembersListData {
 }
 
 export async function getCommunityMembers(communitySlug: string): Promise<CommunityMembersListData | null> {
-    return await prisma.community.findUnique({
+    return prisma.community.findUnique({
         where: {
             slug: communitySlug,
         },
@@ -37,7 +37,7 @@ export async function getCommunityMembers(communitySlug: string): Promise<Commun
 }
 
 export async function getCommunityAdmins(communitySlug: string): Promise<CommunityMembersListData | null> {
-    return await prisma.community.findUnique({
+    return prisma.community.findUnique({
         where: {
             slug: communitySlug,
         },
@@ -63,7 +63,7 @@ export async function getCommunityAdmins(communitySlug: string): Promise<Communi
 }
 
 export async function getAllCommunityMembers(communitySlug: string): Promise<CommunityMembersListData | null> {
-    return await prisma.community.findUnique({
+    return prisma.community.findUnique({
         where: {
             slug: communitySlug,
         },
@@ -93,15 +93,15 @@ export type CommunityMemberCounts = {
 export async function getCommunityMemberCounts(communityId: string): Promise<CommunityMemberCounts> {
     const counts = (await prisma.communityMembership.groupBy({
         by: "role",
-        where: {communityId},
+        where: { communityId },
         _count: {
             _all: true
         }
     }))!;
 
-    const res: CommunityMemberCounts = {};
-    for (let {role, _count} of counts) {
-        res[role] = _count._all;
+    const res: CommunityMemberCounts = {} as CommunityMemberCounts;
+    for (let { role, _count } of counts) {
+        res[ role ] = _count._all;
     }
     return res;
 

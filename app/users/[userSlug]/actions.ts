@@ -4,10 +4,10 @@ import prisma from "@/app/lib/db/prisma";
 
 export type UserOfUserList = {
     id: string,
-    name: string,
+    name: string | null,
     slug: string,
-    image: string,
-    description: string
+    image: string | null,
+    description: string | null
 }
 
 export async function getUserFollowers(userId: string): Promise<UserOfUserList[]> {

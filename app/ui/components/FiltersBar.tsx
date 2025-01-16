@@ -25,7 +25,7 @@ export default function FiltersBar() {
                     <Link href={`?${searchParamsWithFilter.toString()}`} key={filter}
                           className={clsx([ "flex gap-2 items-center text-sm rounded-full p-4",
                               searchParams.get("filter") === filter ? "bg-primary" : "bg-neutral hover:bg-base-300" ])}>
-                        {filters[ filter ]} {filter}</Link>
+                        {filters[ filter as keyof typeof filters]} {filter}</Link>
                 );
             })}
         </div>

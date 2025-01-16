@@ -42,7 +42,7 @@ export async function createCommunity({
                                           aboutDescription,
                                           aboutImages,
                                       }: CreateCommunityData) {
-    const slug = slugify(name, {lower: true});
+    const slug = slugify(name, { lower: true });
     await prisma.community.create({
         data: {
             name,
@@ -56,7 +56,7 @@ export async function createCommunity({
             aboutDescription,
             aboutImages,
             creator: {
-                connect: {id: creatorId}
+                connect: { id: creatorId }
             },
             members: {
                 create: {
@@ -82,14 +82,36 @@ export type CommunityWithMembers = Community & {
 };
 
 export type CommunityWithCreator = Community & {
-    creator:  NonNullable<SessionUser>,
+    creator: NonNullable<SessionUser>,
 };
 
 export type CommunityWithAllMembers = CommunityWithMemberCount & CommunityWithMembers & CommunityWithCreator;
 
 
-export async function getMainPageCommunities(page: number): Promise<CommunityWithMemberCount[]> {
-    return await prisma.community.findMany({
+export async function getMainPageCommunities(page: number, filter: string | null): Promise<CommunityWithMemberCount[]> {
+    if (!filter) {
+
+        return prisma.community.findMany({
+            orderBy: {
+                members: {
+                    _count: "desc",
+                }
+            },
+            include: {
+                _count: {
+                    select: { members: true },
+                },
+            },
+            take: COMMUNITIES_ON_PAGE,
+            skip: (page - 1) * COMMUNITIES_ON_PAGE,
+        });
+    }
+    return prisma.community.findMany({
+        where: {
+            filters: {
+                has: filter,
+            }
+        },
         orderBy: {
             members: {
                 _count: "desc",
@@ -97,7 +119,7 @@ export async function getMainPageCommunities(page: number): Promise<CommunityWit
         },
         include: {
             _count: {
-                select: {members: true},
+                select: { members: true },
             },
         },
         take: COMMUNITIES_ON_PAGE,
@@ -106,11 +128,11 @@ export async function getMainPageCommunities(page: number): Promise<CommunityWit
 }
 
 export async function getCommunityFromSlug(slug: string): Promise<CommunityWithAllMembers | null> {
-    return await prisma.community.findUnique({
-        where: {slug},
+    return prisma.community.findUnique({
+        where: { slug },
         include: {
             _count: {
-                select: {members: true},
+                select: { members: true },
             },
             creator: {
                 select: {
@@ -154,7 +176,7 @@ export async function checkIfUserInCommunity(userId: string, communityId: string
             }
         }
     });
-    return community && community.members?.[0];
+    return community && community.members?.[ 0 ];
 }
 
 export async function addUserToCommunity(userId: string, communityId: string, communitySlug: string) {

@@ -6,11 +6,12 @@ import CommunitiesGrid from "@/app/ui/components/CommunitiesGrid";
 interface HomeProps {
     searchParams: {
         page?: string,
+        filter: string | null,
     }
 }
 
 
-export default function Home({ searchParams: { page = "1" } }: HomeProps) {
+export default function Home({ searchParams: { page = "1", filter = null } }: HomeProps) {
 
     return (
         <div className="text-center text-3xl">
@@ -31,7 +32,7 @@ export default function Home({ searchParams: { page = "1" } }: HomeProps) {
             <div className="max-w-5xl mx-auto">
 
                 <FiltersBar/>
-                <CommunitiesGrid page={+page}/>
+                <CommunitiesGrid page={+page} filter={filter}/>
             </div>
         </div>
     )

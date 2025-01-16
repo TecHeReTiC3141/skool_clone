@@ -1,11 +1,11 @@
-import {getServerSession} from "next-auth";
+import { getServerSession } from "next-auth";
 import UserMenuBtn from "@/app/ui/components/auth/UserMenuBtn";
 import NotificationsBtn from "@/app/ui/components/NotificationsBtn";
-import {authOptions} from "@/app/lib/config/authOptions";
+import { authOptions } from "@/app/lib/config/authOptions";
 import CommunityNavBar from "@/app/communities/[communitySlug]/CommunityNavBar";
 import HeaderSwitcher from "@/app/ui/components/HeaderSwitcher";
-import {getUserBySlug} from "@/app/lib/db/user";
-import {CommunityMembershipData} from "@/app/lib/db/community";
+import { getUserBySlug } from "@/app/lib/db/user";
+import { CommunityMembershipData } from "@/app/lib/db/community";
 
 interface HeaderProps {
     communitySlug?: string
@@ -19,7 +19,7 @@ export default async function Header({communitySlug}: HeaderProps) {
     let userCommunities: {community: CommunityMembershipData}[] | null = null;
 
     if (user) {
-        userCommunities = (await getUserBySlug(user.slug))?.communities;
+        userCommunities = (await getUserBySlug(user.slug))?.communities ?? [];
     }
 
     return (

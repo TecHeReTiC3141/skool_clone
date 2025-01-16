@@ -6,14 +6,17 @@ import { COMMUNITIES_ON_PAGE } from "@/app/lib/params";
 
 interface CommunitiesGridProps {
     page: number,
+    filter: string | null,
 }
 
 
-export default async function CommunitiesGrid({ page }: CommunitiesGridProps) {
+export default async function CommunitiesGrid({ page, filter }: CommunitiesGridProps) {
 
-    const communities = await getMainPageCommunities(page);
+    const communities = await getMainPageCommunities(page, filter);
 
     const totalCommunities = await prisma.community.count();
+
+    console.log("filtering " + filter);
 
     return (
         <>
